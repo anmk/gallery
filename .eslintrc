@@ -1,0 +1,8 @@
+{
+  "extends": ["react-app", "airbnb"],
+  "rules": {
+    "import/prefer-default-export": 0,
+    "react/jsx-filename-extension": [1, {"extensions": [".js"]}],
+    "react/jsx-props-no-spreading": 0
+  }
+}
