@@ -1,30 +1,41 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter, Redirect, Route, Switch,
+} from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 
-function App() {
+import { routes } from 'routes';
+import GlobalStyle from 'theme/GlobalStyle';
+import { theme } from 'theme/mainTheme';
+import Login from 'components/auth/Login';
+import GalleryList from 'components/Gallery/GalleryList';
+import GalleryCard from 'components/Gallery/GalleryCard';
+import Navbar from 'components/navigation/Navbar';
+import useAuth from 'components/auth/useAuth';
+import ForgotPassword from 'components/auth/ForgotPassword';
+import firebase, { FirebaseContext } from './firebase';
+
+const App = () => {
+  const user = useAuth();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.js</code>
-          {' '}
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <GlobalStyle />
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <FirebaseContext.Provider value={{ user, firebase }}>
+            <Navbar />
+            <Switch>
+              <Redirect exact from="/" to="/home" />
+              <Route exact path={routes.forgot} component={ForgotPassword} />
+              <Route path={routes.galleryList} component={GalleryList} />
+              <Route path={routes.galleryCard} component={GalleryCard} />
+              <Route exact path={routes.login} component={Login} />
+            </Switch>
+          </FirebaseContext.Provider>
+        </BrowserRouter>
+      </ThemeProvider>
     </div>
   );
-}
+};
 
 export default App;
