@@ -5,9 +5,9 @@
     "react/jsx-filename-extension": [1, {"extensions": [".js"]}],
     "react/jsx-props-no-spreading": 0,
     "linebreak-style": 0,
-    // "no-use-before-define": ["error", { "functions": false, "classes": false, "variables": false }]
-    // "no-use-before-define": ["error", { "functions": false }]
-    "react/jsx-one-expression-per-line": "off"
+    "no-use-before-define": ["error", { "functions": false }],
+    "react/jsx-one-expression-per-line": "off",
+    "max-len": ["error", { "code": 110 }]
   },
   "settings": {
     "import/resolver": {
