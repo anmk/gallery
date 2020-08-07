@@ -1,9 +1,9 @@
 export const routes = {
-  home: '/home',
-  gallery: '/gallery',
-  forgot: '/forgot',
-  galleryList: '/galleryList',
-  galleryCard: '/galleryCard/:id',
-  signup: '/signup',
-  login: '/login',
+  main: '/',
+  home: 'home',
+  galleryList: 'galleries',
+  galleryItem: ':gid',
+  galleryPhoto: ':pid',
+  login: 'login',
+  forgot: 'forgot',
 };
