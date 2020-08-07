@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import {
-  StyledInput, StyledHeading, StyledWrapper, StyledContainer, StyledBox,
-} from 'components/auth/authStyled';
 import { Button, Heading } from 'components/shared';
+import {
+  StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
+} from 'components/auth/authStyled';
 import useFormValidation from 'components/auth/useFormValidation';
 import LoginValidation from 'components/auth/LoginValidation';
 import firebase from '../../firebase';
@@ -28,7 +27,7 @@ const StyledLittleFont = css`
 `;
 
 const StyledOuterErrorContainer = styled(Heading)`
-  height: 1rem;
+ height: 1rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -52,15 +51,13 @@ const StyledError = styled.p`
   color: ${({ theme }) => theme.error}; 
 `;
 
-const Login = (props) => {
+const Login = () => {
   const {
     handleChange, handleSubmit, handleBlur, isSubmitting, values, errors,
-  // eslint-disable-next-line no-use-before-define
   } = useFormValidation(INITIAL_STATE, LoginValidation, authenticateUser);
-
   const [firebaseError, setFirebaseError] = useState(null);
-
   const [login, setLogin] = useState(true);
+  const navigate = useNavigate();
 
   async function authenticateUser() {
     const { name, email, password } = values;
@@ -68,9 +65,8 @@ const Login = (props) => {
       const response = login
         ? await firebase.login(email, password)
         : await firebase.register(name, email, password);
-      props.history.push('/');
-      console.log(props.history);
-      console.log({ response });
+      navigate('/galleries');
+      console.log(response.user.displayName);
     } catch (err) {
       console.error('Authentication error', err);
       setFirebaseError(err.message);
@@ -78,81 +74,73 @@ const Login = (props) => {
   }
 
   return (
-    <StyledWrapper>
-      <form onSubmit={handleSubmit}>
-        <StyledContainer>
-          <StyledBox>
-            <StyledHeading>{login ? 'Login' : 'Create Account'}</StyledHeading>
-            {!login && (
-              <>
-                <StyledInput
-                  onChange={handleChange}
-                  value={values.name}
-                  name="name"
-                  type="text"
-                  placeholder="Your name"
-                  autoComplete="off"
-                />
-                <StyledOuterErrorContainer />
-              </>
-            )}
-            <StyledInput
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.email}
-              name="email"
-              type="email"
-              placeholder="Your email"
-              autoComplete="off"
-            />
-            <StyledOuterErrorContainer>
-              {errors.email && <StyledError>{errors.email}</StyledError>}
-            </StyledOuterErrorContainer>
-            <StyledInput
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.password}
-              name="password"
-              type="password"
-              placeholder="Your password"
-              autoComplete="off"
-            />
-            <StyledOuterErrorContainer>
-              {errors.password && <StyledError>{errors.password}</StyledError>}
-              {firebaseError && <StyledError>{firebaseError}</StyledError>}
-            </StyledOuterErrorContainer>
-            <StyledButton
-              secondary="true"
-              type="submit"
-              disabled={isSubmitting}
-              style={{ border: isSubmitting ? 'grey' : 'orange' }}
-            >
-              {login ? 'Login' : 'Register'}
-            </StyledButton>
-            <StyledLink
-              type="button"
-              onClick={() => setLogin((prevLogin) => !prevLogin)}
-            >
-              {login ? 'Need to create account' : 'Already have an account?'}
-            </StyledLink>
-            <StyledLink as={NavLink} to="/forgot" type="button">
-              Forgot password?
-            </StyledLink>
-          </StyledBox>
-        </StyledContainer>
-      </form>
-    </StyledWrapper>
+    <div>
+      <StyledAuthWrapper>
+        <form onSubmit={handleSubmit}>
+          <StyledAuthContainer>
+            <StyledAuthBox>
+              <StyledAuthHeading>{login ? 'Login' : 'Create Account'}</StyledAuthHeading>
+              {!login && (
+                <>
+                  <StyledAuthInput
+                    onChange={handleChange}
+                    value={values.name}
+                    name="name"
+                    type="text"
+                    placeholder="Your name"
+                    autoComplete="off"
+                  />
+                  <StyledOuterErrorContainer />
+                </>
+              )}
+              <StyledAuthInput
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+                name="email"
+                type="email"
+                placeholder="Your email"
+                autoComplete="off"
+              />
+              <StyledOuterErrorContainer>
+                {errors.email && <StyledError>{errors.email}</StyledError>}
+              </StyledOuterErrorContainer>
+              <StyledAuthInput
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
+                name="password"
+                type="password"
+                placeholder="Your password"
+                autoComplete="off"
+              />
+              <StyledOuterErrorContainer>
+                {errors.password && <StyledError>{errors.password}</StyledError>}
+                {firebaseError && <StyledError>{firebaseError}</StyledError>}
+              </StyledOuterErrorContainer>
+              <StyledButton
+                secondary="true"
+                type="submit"
+                disabled={isSubmitting}
+                style={{ border: isSubmitting ? 'grey' : 'orange' }}
+              >
+                {login ? 'Login' : 'Register'}
+              </StyledButton>
+              <StyledLink
+                type="button"
+                onClick={() => setLogin((prevLogin) => !prevLogin)}
+              >
+                {login ? 'Need to create account' : 'Already have an account?'}
+              </StyledLink>
+              <StyledLink as={NavLink} to="/forgot" type="button">
+                Forgot password?
+              </StyledLink>
+            </StyledAuthBox>
+          </StyledAuthContainer>
+        </form>
+      </StyledAuthWrapper>
+    </div>
   );
-};
-
-Login.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }),
-};
-
-Login.defaultProps = {
-  history: {},
 };
 
 export default Login;

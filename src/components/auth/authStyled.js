@@ -12,26 +12,26 @@ const StyledDisplay = css`
   flex-direction: column;
 `;
 
-export const StyledInput = styled(Input)`
+export const StyledAuthInput = styled(Input)`
   height: 2rem;
   box-shadow: none;
 `;
 
-export const StyledHeading = styled(Heading)`
+export const StyledAuthHeading = styled(Heading)`
   ${StyledLocation}
   margin-bottom: 4rem;
 `;
 
-export const StyledWrapper = styled.div`
+export const StyledAuthWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 1.5rem; 
 `;
 
-export const StyledContainer = styled.div`
+export const StyledAuthContainer = styled.div`
   width: 28rem;
 `;
 
-export const StyledBox = styled.div`
+export const StyledAuthBox = styled.div`
   ${StyledDisplay}
 `;

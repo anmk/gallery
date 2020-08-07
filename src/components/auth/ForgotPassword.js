@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 
-import {
-  StyledInput, StyledHeading, StyledWrapper, StyledContainer, StyledBox,
-} from 'components/auth/authStyled';
 import { Paragraph, Button, Heading } from 'components/shared';
+import {
+  StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
+} from 'components/auth/authStyled';
 import FirebaseContext from '../../firebase/context';
 
 const StyledLocation = css`
@@ -40,11 +40,11 @@ const ForgotPassword = () => {
   };
 
   return (
-    <StyledWrapper>
-      <StyledContainer>
-        <StyledBox>
-          <StyledHeading>Forgot password</StyledHeading>
-          <StyledInput
+    <StyledAuthWrapper>
+      <StyledAuthContainer>
+        <StyledAuthBox>
+          <StyledAuthHeading>Forgot password</StyledAuthHeading>
+          <StyledAuthInput
             type="email"
             placeholder="Provide your account email"
             onChange={(event) => setResetPasswordEmail(event.target.value)}
@@ -55,9 +55,9 @@ const ForgotPassword = () => {
           </StyledButton>
           {userPasswordReset && <Paragraph>Check email to reset password</Paragraph>}
           {passwordResetError && <Paragraph>{passwordResetError}</Paragraph>}
-        </StyledBox>
-      </StyledContainer>
-    </StyledWrapper>
+        </StyledAuthBox>
+      </StyledAuthContainer>
+    </StyledAuthWrapper>
   );
 };
 
