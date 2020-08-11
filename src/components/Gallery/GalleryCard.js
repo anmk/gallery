@@ -1,66 +1,56 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Paragraph } from 'components/shared';
+import {
+  StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
+} from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
 
-const StyledWrapper = styled.div`
-  display: flex;
+const StyledWrapper = styled(StyledGalleryWrapper)`
   flex-flow: row wrap;
-  box-shadow: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
   justify-content: center;
-  border-radius: 10px;
-  overflow: hidden;
   margin: 15px;
 `;
 
-const InnerWrapper = styled.div`
-  padding: 10px;
-`;
-
-const ImageElement = styled.img`
+const StyledPhoto = styled(StyledGalleryImage)`
+  width: 28rem;
   margin-top: 1rem;
-  width: 280px;
   border-radius: 10px;
-  border: 1px solid ${({ theme }) => theme.darkGrey};
-`;
-
-const StyledHeading = styled.h3`
-  width: 280px;
-  color: ${({ theme }) => theme.veryDarkGrey};
-  padding: 0;
-  margin: 0;
-`;
-
-const StyledSubHeading = styled.p`
-  width: 280px;
-  color: ${({ theme }) => theme.veryDarkGrey};
-  padding: 0;
-  margin: 0;
 `;
 
 const GalleryCard = ({
-  id, name, description, imageUrl,
-}) => (
-  <StyledWrapper>
-    <InnerWrapper>
-      <StyledHeading>{name}</StyledHeading>
-      <StyledSubHeading>{description}</StyledSubHeading>
-      <ImageElement src={imageUrl || noImageAvailable} alt={name} />
-      <div>{id}</div>
-    </InnerWrapper>
-  </StyledWrapper>
-);
+  gid, name, description, imageUrl,
+}) => {
+  const COLLECTION_URL = 'galleries';
+  const navigate = useNavigate();
+
+  const handleCardClick = () => (
+    navigate(`/${COLLECTION_URL}/${gid}`)
+  );
+
+  return (
+    <StyledWrapper type="button" onClick={handleCardClick}>
+      <StyledGalleryInnerWrapper>
+        <StyledGalleryHeading>{name}</StyledGalleryHeading>
+        <Paragraph>{description}</Paragraph>
+        <StyledPhoto src={imageUrl || noImageAvailable} alt={name} />
+      </StyledGalleryInnerWrapper>
+    </StyledWrapper>
+  );
+};
 
 GalleryCard.propTypes = {
-  id: PropTypes.string,
+  gid: PropTypes.string,
   name: PropTypes.string,
   description: PropTypes.string,
   imageUrl: PropTypes.string,
 };
 
 GalleryCard.defaultProps = {
-  id: '',
+  gid: '',
   name: '',
   description: '',
   imageUrl: '',
