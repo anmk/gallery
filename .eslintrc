@@ -6,8 +6,9 @@
     "react/jsx-props-no-spreading": 0,
     "linebreak-style": 0,
     "no-use-before-define": ["error", { "functions": false }],
+    "no-unused-expressions": "off",
     "react/jsx-one-expression-per-line": "off",
-    "max-len": ["error", { "code": 110 }]
+    "max-len": ["error", { "code": 120 }]
   },
   "settings": {
     "import/resolver": {
