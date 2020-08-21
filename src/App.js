@@ -4,16 +4,17 @@ import {
 } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
+import { routes } from 'routes';
 import GlobalStyle from 'theme/GlobalStyle';
 import { theme } from 'theme/mainTheme';
 import Login from 'components/auth/Login';
 import GalleryList from 'components/Gallery/GalleryList';
-import GalleryPhoto from 'components/Gallery/GalleryPhoto';
+import GalleryDetailsItem from 'components/Gallery/GalleryDetailsItem';
 import GalleryItem from 'components/Gallery/GalleryItem';
 import Navbar from 'components/navigation/Navbar';
-import useAuth from 'components/auth/useAuth';
+import useAuth from 'hooks/useAuth';
 import ForgotPassword from 'components/auth/ForgotPassword';
-import firebase, { FirebaseContext } from './firebase';
+import fbase, { FirebaseContext } from './firebase';
 import GalleryThumbnail from './components/Gallery/GalleryThumbnail';
 
 const App = () => {
@@ -24,21 +25,21 @@ const App = () => {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <FirebaseContext.Provider value={{ user, firebase }}>
+          <FirebaseContext.Provider value={{ user, fbase }}>
             <Navbar />
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="home" element={<Home />} />
-              <Route path="galleries">
-                <Route path="/" element={<GalleryList />} />
-                <Route path=":gid" element={<GalleryItem />}>
-                  <Route path="/" element={<GalleryThumbnail />} />
-                  <Route path=":pid" element={<GalleryPhoto />} />
+              <Route path={routes.main} element={<Home />} />
+              <Route path={routes.home} element={<Home />} />
+              <Route path={routes.galleryList}>
+                <Route path={routes.main} element={<GalleryList />} />
+                <Route path={routes.galleryItem} element={<GalleryItem />}>
+                  <Route path={routes.main} element={<GalleryThumbnail />} />
+                  <Route path={routes.galleryDetailsItem} element={<GalleryDetailsItem />} />
                 </Route>
               </Route>
-              <Route path="login" element={<Login />} />
-              <Route path="forgot" element={<ForgotPassword />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path={routes.login} element={<Login />} />
+              <Route path={routes.forgot} element={<ForgotPassword />} />
+              <Route path={routes.all} element={<NotFound />} />
             </Routes>
           </FirebaseContext.Provider>
         </BrowserRouter>
