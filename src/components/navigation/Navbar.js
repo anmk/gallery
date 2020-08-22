@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from 'components/shared';
+import { firebaseLogout } from 'components/auth/Login';
 import FirebaseContext from '../../firebase/context';
 
 const StyledWrapper = styled.nav`
@@ -33,11 +34,14 @@ const StyledInfo = styled.div`
 `;
 
 const Navbar = () => {
-  const { user, firebase } = useContext(FirebaseContext);
+  const { user } = useContext(FirebaseContext);
+
   return (
     <StyledWrapper>
       <StyledInfo>
-        Hello { user ? user.displayName : 'Stranger' }
+        {user && <span>Hello </span>}
+        {user?.displayName && <span>{user.displayName}</span>}
+        {user && !user?.displayName && <span>{user?.email}</span>}
       </StyledInfo>
       <StyledUlList>
         <StyledLiList>
@@ -66,7 +70,7 @@ const Navbar = () => {
               nav="true"
               as={NavLink}
               to="/login"
-              onClick={() => firebase.logout()}
+              onClick={() => firebaseLogout()}
               activeclass="active"
             >Logout
             </Button>
