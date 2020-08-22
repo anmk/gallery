@@ -22,12 +22,13 @@ export const theme = {
   },
   fontWeight: {
     light: '300',
+    regular: '400',
     bold: '700',
   },
   fontSize: {
     xxs: '1rem',
     xs: '1.2rem',
-    s: '1.6rem',
+    s: '1.5rem',
     m: '2rem',
     l: '2.4rem',
     xl: '4rem',
