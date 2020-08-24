@@ -13,7 +13,7 @@ const StyledDisplay = css`
 `;
 
 export const StyledAuthInput = styled(Input)`
-  height: 2rem;
+  height: 3rem;
   box-shadow: none;
 `;
 
