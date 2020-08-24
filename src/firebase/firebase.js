@@ -1,6 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 import firebaseConfig from 'firebase/config';
 
@@ -9,31 +10,9 @@ class Firebase {
     app.initializeApp(firebaseConfig);
     this.auth = app.auth();
     this.db = app.firestore();
-  }
-
-  async register(name, email, password) {
-    const newUser = await this.auth.createUserWithEmailAndPassword(
-      email,
-      password,
-    );
-    return newUser.user.updateProfile({
-      displayName: name,
-    });
-  }
-
-  async login(email, password) {
-    const signIn = await this.auth.signInWithEmailAndPassword(email, password);
-    return signIn;
-  }
-
-  async logout() {
-    await this.auth.signOut();
-  }
-
-  async resetPassword(email) {
-    await this.auth.sendPasswordResetEmail(email);
+    this.storage = app.storage;
   }
 }
 
-const firebase = new Firebase();
-export default firebase;
+const fbase = new Firebase();
+export default fbase;
