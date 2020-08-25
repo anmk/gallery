@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { Button, Heading } from 'components/shared';
+import { Button } from 'components/shared';
 import {
   StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
 } from 'components/auth/authStyled';
-import useFormValidation from 'components/auth/useFormValidation';
-import LoginValidation from 'components/auth/LoginValidation';
-import firebase from '../../firebase';
+import { StyledOuterContainer, StyledFormError } from 'components/componentsStyled';
+import useFormValidation from 'hooks/useFormValidation';
+import loginValidation from 'validations/loginValidation';
+import fbase from '../../firebase';
 
 const INITIAL_STATE = {
   name: '',
@@ -26,8 +27,11 @@ const StyledLittleFont = css`
   text-decoration: none;
 `;
 
-const StyledOuterErrorContainer = styled(Heading)`
- height: 1rem;
+const StyledAuthElement = styled.div`
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;
 
 const StyledButton = styled(Button)`
@@ -44,31 +48,43 @@ const StyledLink = styled.a`
   ${StyledLittleFont};
 `;
 
-const StyledError = styled.p`
-  ${StyledLittleFont};
-  padding: 0;
-  margin: 0;
-  color: ${({ theme }) => theme.error}; 
-`;
+const firebaseLogout = async () => {
+  await fbase.auth.signOut();
+};
 
 const Login = () => {
   const {
     handleChange, handleSubmit, handleBlur, isSubmitting, values, errors,
-  } = useFormValidation(INITIAL_STATE, LoginValidation, authenticateUser);
+  } = useFormValidation(INITIAL_STATE, loginValidation, authenticateUser);
   const [firebaseError, setFirebaseError] = useState(null);
   const [login, setLogin] = useState(true);
   const navigate = useNavigate();
 
+  const firebaseRegister = async (name, email, password) => {
+    const newUser = await fbase.auth.createUserWithEmailAndPassword(
+      email,
+      password,
+    );
+    const updateProfile = await newUser.user.updateProfile({
+      displayName: name,
+    });
+    return updateProfile;
+  };
+
+  const firebaseLogin = async (email, password) => {
+    const signIn = await fbase.auth.signInWithEmailAndPassword(email, password);
+    return signIn;
+  };
+
   async function authenticateUser() {
     const { name, email, password } = values;
     try {
-      const response = login
-        ? await firebase.login(email, password)
-        : await firebase.register(name, email, password);
+      login
+        ? await firebaseLogin(email, password)
+        : await firebaseRegister(name, email, password);
       navigate('/galleries');
-      console.log(response.user.displayName);
     } catch (err) {
-      console.error('Authentication error', err);
+      // console.error('Authentication error', err);
       setFirebaseError(err.message);
     }
   }
@@ -81,7 +97,7 @@ const Login = () => {
             <StyledAuthBox>
               <StyledAuthHeading>{login ? 'Login' : 'Create Account'}</StyledAuthHeading>
               {!login && (
-                <>
+                <StyledAuthElement>
                   <StyledAuthInput
                     onChange={handleChange}
                     value={values.name}
@@ -90,42 +106,48 @@ const Login = () => {
                     placeholder="Your name"
                     autoComplete="off"
                   />
-                  <StyledOuterErrorContainer />
-                </>
+                  <StyledOuterContainer />
+                </StyledAuthElement>
               )}
-              <StyledAuthInput
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.email}
-                name="email"
-                type="email"
-                placeholder="Your email"
-                autoComplete="off"
-              />
-              <StyledOuterErrorContainer>
-                {errors.email && <StyledError>{errors.email}</StyledError>}
-              </StyledOuterErrorContainer>
-              <StyledAuthInput
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.password}
-                name="password"
-                type="password"
-                placeholder="Your password"
-                autoComplete="off"
-              />
-              <StyledOuterErrorContainer>
-                {errors.password && <StyledError>{errors.password}</StyledError>}
-                {firebaseError && <StyledError>{firebaseError}</StyledError>}
-              </StyledOuterErrorContainer>
-              <StyledButton
-                secondary="true"
-                type="submit"
-                disabled={isSubmitting}
-                style={{ border: isSubmitting ? 'grey' : 'orange' }}
-              >
-                {login ? 'Login' : 'Register'}
-              </StyledButton>
+              <StyledAuthElement>
+                <StyledAuthInput
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.email}
+                  name="email"
+                  type="email"
+                  placeholder="Your email"
+                  autoComplete="off"
+                />
+              </StyledAuthElement>
+              <StyledOuterContainer>
+                {errors.email && <StyledFormError>{errors.email}</StyledFormError>}
+              </StyledOuterContainer>
+              <StyledAuthElement>
+                <StyledAuthInput
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.password}
+                  name="password"
+                  type="password"
+                  placeholder="Your password"
+                  autoComplete="off"
+                />
+              </StyledAuthElement>
+              <StyledOuterContainer>
+                {errors.password && <StyledFormError>{errors.password}</StyledFormError>}
+                {firebaseError && <StyledFormError>{firebaseError}</StyledFormError>}
+              </StyledOuterContainer>
+              <StyledAuthElement>
+                <StyledButton
+                  secondary="true"
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{ border: isSubmitting ? 'grey' : 'orange' }}
+                >
+                  {login ? 'Login' : 'Register'}
+                </StyledButton>
+              </StyledAuthElement>
               <StyledLink
                 type="button"
                 onClick={() => setLogin((prevLogin) => !prevLogin)}
@@ -143,4 +165,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export { firebaseLogout, Login as default };
