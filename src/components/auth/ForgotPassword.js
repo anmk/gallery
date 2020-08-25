@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Paragraph, Button, Heading } from 'components/shared';
+import { Button } from 'components/shared';
+import { StyledOuterContainer, StyledFormError } from 'components/componentsStyled';
 import {
   StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
 } from 'components/auth/authStyled';
@@ -17,23 +18,23 @@ const StyledButton = styled(Button)`
   ${StyledLocation}
 `;
 
-const StyledOuterErrorContainer = styled(Heading)`
- height: 1rem;
-`;
-
 const ForgotPassword = () => {
-  const { firebase } = useContext(FirebaseContext);
+  const { fbase } = useContext(FirebaseContext);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
   const [userPasswordReset, setUserPasswordReset] = useState(false);
   const [passwordResetError, setPasswordResetError] = useState(null);
 
+  const firebaseResetPassword = async (email) => {
+    await fbase.auth.sendPasswordResetEmail(email);
+  };
+
   const handleResetPassword = async () => {
     try {
-      await firebase.resetPassword(resetPasswordEmail);
+      await firebaseResetPassword(resetPasswordEmail);
       setUserPasswordReset(true);
       setPasswordResetError(null);
     } catch (err) {
-      console.error('Error sending email', err);
+      // console.error('Error sending email', err);
       setPasswordResetError(err.message);
       setUserPasswordReset(false);
     }
@@ -49,12 +50,12 @@ const ForgotPassword = () => {
             placeholder="Provide your account email"
             onChange={(event) => setResetPasswordEmail(event.target.value)}
           />
-          <StyledOuterErrorContainer />
+          <StyledOuterContainer />
           <StyledButton secondary="true" onClick={handleResetPassword}>
             Reset password
           </StyledButton>
-          {userPasswordReset && <Paragraph>Check email to reset password</Paragraph>}
-          {passwordResetError && <Paragraph>{passwordResetError}</Paragraph>}
+          {userPasswordReset && <StyledFormError>Check email to reset password</StyledFormError>}
+          {passwordResetError && <StyledFormError>{passwordResetError}</StyledFormError>}
         </StyledAuthBox>
       </StyledAuthContainer>
     </StyledAuthWrapper>
