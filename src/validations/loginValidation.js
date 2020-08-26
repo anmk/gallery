@@ -1,4 +1,4 @@
-export default function LoginValidation(values) {
+export default function loginValidation(values) {
   const errors = {};
   // Email errors
   if (!values.email) {
