@@ -5,6 +5,15 @@ const useFormValidation = (initialState, validate, authenticate) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setSubmitting] = useState(false);
 
+  const clearErrors = () => {
+    setErrors(Object.keys(errors).length === 0);
+    setValues({
+      name: '',
+      description: '',
+      imageUrl: '',
+    });
+  };
+
   useEffect(() => {
     const noErrors = (Object.keys(errors).length === 0 && isSubmitting);
     if (noErrors) {
@@ -36,7 +45,13 @@ const useFormValidation = (initialState, validate, authenticate) => {
   };
 
   return {
-    handleChange, handleSubmit, handleBlur, isSubmitting, values, errors,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    isSubmitting,
+    values,
+    errors,
+    clearErrors,
   };
 };
 
