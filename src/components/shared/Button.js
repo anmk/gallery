@@ -1,14 +1,17 @@
 import styled, { css } from 'styled-components';
 
+import { StyledGalleryBasicElement } from 'components/shared/sharedStyled';
+
 const Button = styled.button`
-  color: ${({ theme }) => theme.veryDarkGrey};
+ ${StyledGalleryBasicElement};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem;
   background-color: ${({ theme }) => theme.secondary};
-  font-size: ${({ theme }) => theme.fontSize.s};
-  font-weight: ${({ theme }) => theme.fontWeight.light};
-  border: none;
-  border-radius: 50px;
-  text-decoration: none;
-  outline: none; /* remove blue selected outline on click */
+  border: 1px solid ${({ theme }) => theme.darkGrey};
+  border-radius: 5px;
+  button:focus {outline:0;}
 
   &.active {
     background-color: ${({ theme }) => theme.veryLightGrey};
@@ -19,15 +22,12 @@ const Button = styled.button`
   ${({ primary }) => (
     primary && css`
       background-color: ${({ theme }) => theme.primary};
-      height: 3rem;
-      button:focus {outline:0;}
     `
   )}
 
   ${({ secondary }) => (
     secondary && css`
       background-color: ${({ theme }) => theme.secondary};
-      height: 3rem;
     `
   )}
 
@@ -35,7 +35,6 @@ const Button = styled.button`
     nav && css`
       background-color: transparent;
       color: ${({ theme }) => theme.veryLightGrey};
-      padding: 3px;
       border: none;
     `
   )}
