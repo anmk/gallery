@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 
+import {
+  StyledGalleryBasicElement, StyledGalleryPlaceholderElement,
+} from 'components/shared/sharedStyled';
+
 const Paragraph = styled.p`
-  font-size: ${({ theme }) => theme.fontSize.s};
-  font-weight: ${({ theme }) => theme.fontWeight.light};
-  color: ${({ theme }) => theme.veryDarkGrey};
-  padding: .2rem .5rem;
-  margin: 0;
+  ${StyledGalleryBasicElement};
+  
+  ::placeholder {
+    ${StyledGalleryPlaceholderElement};
+  }
 `;
 
 export default Paragraph;
