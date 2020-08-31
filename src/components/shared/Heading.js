@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
 const Heading = styled.h1`
-  color: ${({ theme }) => theme.veryDarkGrey};
   font-size: ${({ theme, big }) => (big ? theme.fontSize.xl : theme.fontSize.l)};
-  font-weight: ${({ theme }) => theme.bold};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  color: ${({ theme }) => theme.veryDarkGrey};
   padding: .4rem .5rem;
-  margin: 0;
 `;
 
 export default Heading;
