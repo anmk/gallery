@@ -1,29 +1,26 @@
 import styled, { css } from 'styled-components';
 
+import {
+  StyledGalleryBasicElement, StyledGalleryPlaceholderElement,
+} from 'components/shared/sharedStyled';
 import magnifierIcon from 'assets/images/magnifier.svg';
 
 const Input = styled.input`
-  padding: 15px;
-  font-size: ${({ theme }) => theme.fontSize.xs};
-  font-weight: ${({ theme }) => theme.regular};
-  color: ${({ theme }) => theme.veryDarkGrey};
-  background-color: ${({ theme }) => theme.lightGray};
-  border: 2px solid ${({ theme }) => theme.grey};
-  border-radius: 10px;
-  outline: none;
-  
+  ${StyledGalleryBasicElement};
+  border: 1px solid ${({ theme }) => theme.darkGrey};
+  border-radius: 5px;
+  height: 3rem;
+
   ::placeholder {
-    text-decoration: none;
-    letter-spacing: 1px;
-    color: ${({ theme }) => theme.grey};
+    ${StyledGalleryPlaceholderElement};
   }
   
   ${({ search }) => search && css`
-      padding: 10px 20px 10px 40px;
+      padding: 1rem 2rem 1rem 4rem;
       font-size: ${({ theme }) => theme.fontSize.xs};
       background-image: url(${magnifierIcon});
-      background-size: 15px;
-      background-position: 15px 50%;
+      background-size: 1.5rem;
+      background-position: 1.5rem 50%;
       background-repeat: no-repeat;
   `}
 `;
