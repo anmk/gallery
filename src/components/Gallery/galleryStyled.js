@@ -13,8 +13,8 @@ export const StyledGalleryHeading = styled(Heading)`
 `;
 
 export const StyledGalleryImage = styled.img`
-  max-width: 60rem;  
-  max-height: 60rem;
+  max-width: 55rem;  
+  max-height: 55rem;
   ${StyledGalleryBorder}
   align-self: center;
 `;
