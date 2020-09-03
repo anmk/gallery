@@ -14,7 +14,7 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
 
 const GalleryList = () => {
   const GALLERIES_URL = 'galleries';
-  const { firebase } = useContext(FirebaseContext);
+  const { fbase } = useContext(FirebaseContext);
   const [galleries, setGalleries] = useState([]);
 
   useEffect(() => {
@@ -24,8 +24,8 @@ const GalleryList = () => {
       }));
       setGalleries(galleryList);
     };
-    firebase.db.collection(GALLERIES_URL).onSnapshot(handleSnapshot);
-  }, [firebase.db]);
+    fbase.db.collection(GALLERIES_URL).onSnapshot(handleSnapshot);
+  }, [fbase.db]);
 
   return (
     <StyledWrapper>
