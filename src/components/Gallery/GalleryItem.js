@@ -52,7 +52,7 @@ const GalleryItem = () => {
   const IMAGE_URLS = 'imageUrls';
   const { gid } = useParams();
 
-  const { firebase } = useContext(FirebaseContext);
+  const { fbase } = useContext(FirebaseContext);
   const [info, setInfo] = useState([]);
   const [gallery, setGallery] = useState([]);
 
@@ -63,28 +63,27 @@ const GalleryItem = () => {
       }));
       setGallery(photoList);
     };
-    firebase.db.collection(COLLECTION_URL).doc(gid).collection(IMAGE_URLS).onSnapshot(handleSnapshot);
-    firebase.db.collection(COLLECTION_URL).doc(gid).onSnapshot((doc) => {
+    fbase.db.collection(COLLECTION_URL).doc(gid).collection(IMAGE_URLS).onSnapshot(handleSnapshot);
+    fbase.db.collection(COLLECTION_URL).doc(gid).onSnapshot((doc) => {
       const galleryInfo = doc.data();
       setInfo(galleryInfo);
     });
-  }, [firebase.db, gid]);
+  }, [fbase.db, gid]);
 
   return (
     <StyledWrapper>
-
       <StyledItem>
         <StyledTitle>
-          <StyledPhoto src={info.imageUrl || noImageAvailable} alt={info.name} />
+          <StyledPhoto src={info?.imageUrl || noImageAvailable} alt={info?.name} />
           <div>
-            <StyledGalleryHeading>{info.name}</StyledGalleryHeading>
-            <Paragraph>{info.description}</Paragraph>
+            <StyledGalleryHeading>{info?.name}</StyledGalleryHeading>
+            <Paragraph>{info?.description}</Paragraph>
           </div>
         </StyledTitle>
 
         <StyledBox>
           {gallery.map((photo) => (
-            <div key={photo.pid}>
+            <div key={photo?.pid}>
               <GalleryDetails {...photo} />
             </div>
           ))}
@@ -94,7 +93,6 @@ const GalleryItem = () => {
       <StyledItem>
         <Outlet />
       </StyledItem>
-
     </StyledWrapper>
   );
 };
