@@ -4,16 +4,14 @@ import styled from 'styled-components';
 
 import { Button } from 'components/shared';
 import { firebaseLogout } from 'components/auth/Login';
-import FirebaseContext from '../../firebase/context';
+import AppContext from 'context';
 
 const StyledWrapper = styled.nav`
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
-  background-color: ${({ activeColor, theme }) => (
-    activeColor ? theme[activeColor] : theme.primary
-  )};
+  background-color: ${({ theme }) => theme.primary};
   @media (max-width: 600px) {
     display: none;
   }
@@ -34,7 +32,7 @@ const StyledInfo = styled.div`
 `;
 
 const Navbar = () => {
-  const { user } = useContext(FirebaseContext);
+  const { user } = useContext(AppContext);
 
   return (
     <StyledWrapper>
