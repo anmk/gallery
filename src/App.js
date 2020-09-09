@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
-  BrowserRouter, Route, Routes,
+  BrowserRouter, Route, Routes, useNavigate,
 } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import { routes } from 'routes';
-import GlobalStyle from 'theme/GlobalStyle';
 import { theme } from 'theme/mainTheme';
+import GlobalStyle from 'theme/GlobalStyle';
 import Login from 'components/auth/Login';
 import GalleryList from 'components/Gallery/GalleryList';
 import GalleryDetailsItem from 'components/Gallery/GalleryDetailsItem';
@@ -14,8 +14,9 @@ import GalleryItem from 'components/Gallery/GalleryItem';
 import Navbar from 'components/navigation/Navbar';
 import useAuth from 'hooks/useAuth';
 import ForgotPassword from 'components/auth/ForgotPassword';
-import fbase, { FirebaseContext } from './firebase';
-import GalleryThumbnail from './components/Gallery/GalleryThumbnail';
+import GalleryThumbnail from 'components/Gallery/GalleryThumbnail';
+import AppContext from 'context';
+import fbase from './firebase';
 
 const App = () => {
   const user = useAuth();
@@ -25,10 +26,10 @@ const App = () => {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
-          <FirebaseContext.Provider value={{ user, fbase }}>
+          <AppContext.Provider value={{ user, fbase }}>
             <Navbar />
             <Routes>
-              <Route path={routes.main} element={<Home />} />
+              <Route path={routes.main} element={<Main />} />
               <Route path={routes.home} element={<Home />} />
               <Route path={routes.galleryList}>
                 <Route path={routes.main} element={<GalleryList />} />
@@ -41,11 +42,22 @@ const App = () => {
               <Route path={routes.forgot} element={<ForgotPassword />} />
               <Route path={routes.all} element={<NotFound />} />
             </Routes>
-          </FirebaseContext.Provider>
+          </AppContext.Provider>
         </BrowserRouter>
       </ThemeProvider>
     </div>
   );
+};
+
+const Main = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    let didCancel = false;
+    const goToHomePage = () => navigate('/home');
+    if (!didCancel) { goToHomePage(); }
+    return () => { didCancel = true; };
+  }, [navigate]);
+  return ('');
 };
 
 const Home = () => (
