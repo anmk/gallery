@@ -6,7 +6,7 @@ import { StyledOuterContainer, StyledFormError } from 'components/componentsStyl
 import {
   StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
 } from 'components/auth/authStyled';
-import FirebaseContext from '../../firebase/context';
+import AppContext from 'context';
 
 const StyledLocation = css`
   align-self: center;
@@ -19,7 +19,7 @@ const StyledButton = styled(Button)`
 `;
 
 const ForgotPassword = () => {
-  const { fbase } = useContext(FirebaseContext);
+  const { fbase } = useContext(AppContext);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
   const [userPasswordReset, setUserPasswordReset] = useState(false);
   const [passwordResetError, setPasswordResetError] = useState(null);
@@ -34,7 +34,6 @@ const ForgotPassword = () => {
       setUserPasswordReset(true);
       setPasswordResetError(null);
     } catch (err) {
-      // console.error('Error sending email', err);
       setPasswordResetError(err.message);
       setUserPasswordReset(false);
     }
