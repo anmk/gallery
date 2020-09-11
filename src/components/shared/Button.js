@@ -11,6 +11,7 @@ const Button = styled.button`
   background-color: ${({ theme }) => theme.secondary};
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 5px;
+  cursor: pointer;
   button:focus {outline:0;}
 
   &.active {
