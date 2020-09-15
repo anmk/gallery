@@ -15,13 +15,25 @@ const useFormValidation = (initialState, validate, authenticate) => {
   };
 
   useEffect(() => {
-    const noErrors = (Object.keys(errors).length === 0 && isSubmitting);
-    if (noErrors) {
-      authenticate();
-      setSubmitting(false);
-    } else {
-      setSubmitting(false);
+    let didCancel = false;
+
+    const prepareErrors = () => {
+      const noErrors = (Object.keys(errors).length === 0 && isSubmitting);
+      if (noErrors) {
+        authenticate();
+        setSubmitting(false);
+      } else {
+        setSubmitting(false);
+      }
+    };
+
+    if (!didCancel) {
+      prepareErrors();
     }
+
+    return () => {
+      didCancel = true;
+    };
   }, [errors, isSubmitting, authenticate]);
 
   const handleChange = (event) => {
