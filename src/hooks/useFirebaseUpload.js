@@ -1,54 +1,35 @@
-import { useState, useEffect } from 'react';
-import fbase from '../firebase';
+import { useState, useEffect, useContext } from 'react';
 
-function useFirebaseUpload() {
-  const [dataResponse, setDataResponse] = useState();
-  const [fileData, setFileData] = useState();
-  const [progress, setProgress] = useState(null);
+import AppContext from 'context';
+
+function useFirebaseUpload(photoLocation) {
+  const [isDbData, setDbData] = useState({});
+  const [isReadyToSend, setReadyToSend] = useState(false);
+  const { fbase } = useContext(AppContext);
 
   useEffect(() => {
-    const setUp = (_value) => {
-      const fName = `${new Date().getTime()}-${_value.name}`;
-      const ref = fbase.storage().ref(`images/${fName}`);
-      return ref.put(_value);
-    };
+    let didCancel = false;
 
-    const uploadData = async () => {
-      setProgress({ value: 0 });
-      const uploadTask = setUp(fileData);
+    async function uploadDbData() {
+      const unsubscribe = await fbase.db.collection(photoLocation).add(isDbData);
+      return () => unsubscribe();
+    }
 
-      try {
-        uploadTask.on(
-          fbase.storage.TaskEvent.STATE_CHANGED,
-          (_progress) => {
-            const value = _progress.bytesTransferred / _progress.totalBytes;
-            setProgress({ value });
-          },
-          (_error) => {
-            console.error('Error: ', _error);
-          },
-          async () => {
-            const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-            setDataResponse({
-              metaData: uploadTask.snapshot.metadata,
-              downloadUrl,
-            });
-
-            setProgress(null);
-          },
-        );
-      } catch (_error) {
-        // console.error('Error: ', _error);
+    if (!didCancel) {
+      if (isReadyToSend && isDbData) {
+        uploadDbData();
       }
-    };
+    }
 
-    if (fileData) uploadData();
-  }, [fileData]);
+    return () => {
+      didCancel = true;
+    };
+  }, [isDbData, fbase.db, photoLocation, isReadyToSend]);
 
   return {
-    dataResponse,
-    progress,
-    setFileData,
+    setDbData,
+    setReadyToSend,
   };
 }
+
 export default useFirebaseUpload;
