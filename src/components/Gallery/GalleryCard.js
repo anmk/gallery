@@ -10,9 +10,11 @@ import {
 import noImageAvailable from 'assets/images/no-image-available.svg';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
+  height: 26.4rem;
   flex-flow: row wrap;
   justify-content: center;
   margin: 15px;
+  cursor: pointer;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
