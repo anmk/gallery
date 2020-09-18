@@ -14,6 +14,7 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
   margin: 2px;
   background-color: ${({ theme }) => theme.veryLightGrey};
   cursor: pointer;
+
   &.active {
     background-color: ${({ theme }) => theme.middleGrey};
     border: 2px solid ${({ theme }) => theme.primary};
