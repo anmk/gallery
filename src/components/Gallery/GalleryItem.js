@@ -8,7 +8,7 @@ import {
   StyledGalleryWrapper, StyledGalleryHeading, StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
-import FirebaseContext from '../../firebase/context';
+import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
   padding: 3rem;
@@ -51,23 +51,43 @@ const GalleryItem = () => {
   const COLLECTION_URL = 'galleries';
   const IMAGE_URLS = 'imageUrls';
   const { gid } = useParams();
-
-  const { fbase } = useContext(FirebaseContext);
+  const { fbase } = useContext(AppContext);
   const [info, setInfo] = useState([]);
   const [gallery, setGallery] = useState([]);
 
   useEffect(() => {
-    const handleSnapshot = (snapshot) => {
-      const photoList = snapshot.docs.map((doc) => ({
-        pid: doc.id, ...doc.data(),
-      }));
-      setGallery(photoList);
+    let didCancel = false;
+
+    const uploadData = async () => {
+      const handleSnapshot = (snapshot) => {
+        const photoList = snapshot.docs.map((doc) => ({
+          pid: doc.id, ...doc.data(),
+        }));
+        setGallery(photoList);
+      };
+      const firstUnsubscribe = await fbase.db.collection(COLLECTION_URL)
+        .doc(gid)
+        .collection(IMAGE_URLS)
+        .onSnapshot(handleSnapshot);
+      const secondUnsubscribe = await fbase.db.collection(COLLECTION_URL)
+        .doc(gid)
+        .onSnapshot((doc) => {
+          const galleryInfo = doc.data();
+          setInfo(galleryInfo);
+        });
+      return () => {
+        firstUnsubscribe();
+        secondUnsubscribe();
+      };
     };
-    fbase.db.collection(COLLECTION_URL).doc(gid).collection(IMAGE_URLS).onSnapshot(handleSnapshot);
-    fbase.db.collection(COLLECTION_URL).doc(gid).onSnapshot((doc) => {
-      const galleryInfo = doc.data();
-      setInfo(galleryInfo);
-    });
+
+    if (!didCancel) {
+      uploadData();
+    }
+
+    return () => {
+      didCancel = true;
+    };
   }, [fbase.db, gid]);
 
   return (
