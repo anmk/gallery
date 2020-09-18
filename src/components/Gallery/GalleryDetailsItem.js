@@ -7,7 +7,7 @@ import {
   StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
-import FirebaseContext from '../../firebase/context';
+import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
   flex-flow: row wrap;
@@ -17,7 +17,7 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
   margin: 0 auto;
 `;
 
-export const StyledGalleryElement = styled.div`
+const StyledGalleryElement = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
@@ -37,22 +37,36 @@ const GalleryDetailsItem = () => {
   const IMAGE_URLS = 'imageUrls';
   const { gid } = useParams();
   const { pid } = useParams();
-  const { fbase } = useContext(FirebaseContext);
+  const { fbase } = useContext(AppContext);
   const [photo, setPhoto] = useState([]);
 
   useEffect(() => {
-    fbase.db
-      .doc(`${COLLECTION_URL}/${gid}/${IMAGE_URLS}/${pid}`)
-      .onSnapshot((doc) => {
-        const photos = doc.data();
-        setPhoto(photos);
-        return (photos);
-      });
+    let didCancel = false;
+
+    const uploadData = async () => {
+      const unsubscribe = await fbase.db
+        .doc(`${COLLECTION_URL}/${gid}/${IMAGE_URLS}/${pid}`)
+        .onSnapshot((doc) => {
+          const photos = doc.data();
+          setPhoto(photos);
+          return (photos);
+        });
+      return () => unsubscribe();
+    };
+
+    if (!didCancel) {
+      uploadData();
+    }
+
+    return () => {
+      didCancel = true;
+    };
   }, [fbase.db, gid, pid]);
+
   return (
     <StyledWrapper>
       <StyledGalleryInnerWrapper>
-        <StyledGalleryHeading>Photo: {photo?.name}</StyledGalleryHeading>
+        <StyledGalleryHeading>{photo?.name}</StyledGalleryHeading>
         <StyledPhoto src={photo?.imageUrl || noImageAvailable} alt={photo?.name} />
         <StyledDescription>{photo?.description}</StyledDescription>
         <StyledGalleryElement>
