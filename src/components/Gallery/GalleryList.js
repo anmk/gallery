@@ -1,31 +1,67 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { StyledGalleryWrapper } from 'components/Gallery/galleryStyled';
+import { ButtonImage } from 'components/shared';
 import GalleryCard from 'components/Gallery/GalleryCard';
-import FirebaseContext from '../../firebase/context';
+import GalleryNewItemPanel from 'components/Gallery/GalleryNewItemPanel';
+import plusImage from 'assets/images/plus.svg';
+import AppContext from 'context';
 
-const StyledWrapper = styled(StyledGalleryWrapper)`
+const StyledWrapper = styled.div`
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   padding: 3rem;
+  margin-top: 1rem;
+`;
+
+const StyledButtonImage = styled(ButtonImage)`
+  position: fixed;
+  top: 12rem;
+  right: 3rem;
+  height: 4rem;
+  width: 4rem;
+  background-color: ${({ theme }) => (theme.secondary)};
+  border: 2px solid ${({ theme }) => theme.darkGrey};
+  background-size: 40%;
+  outline: 0;
+  z-index: 101;
 `;
 
 const GalleryList = () => {
   const GALLERIES_URL = 'galleries';
-  const { fbase } = useContext(FirebaseContext);
+  const { fbase } = useContext(AppContext);
   const [galleries, setGalleries] = useState([]);
+  const [isNewItemPanelVisible, setNewItemPanelVisible] = useState(false);
+
+  const handleSnapshot = (snapshot) => {
+    const galleryList = snapshot.docs.map((doc) => ({
+      gid: doc.id, ...doc.data(),
+    }));
+    setGalleries(galleryList);
+  };
 
   useEffect(() => {
-    const handleSnapshot = (snapshot) => {
-      const galleryList = snapshot.docs.map((doc) => ({
-        gid: doc.id, ...doc.data(),
-      }));
-      setGalleries(galleryList);
+    let didCancel = false;
+
+    const handleCollection = async () => {
+      const unsubscribe = await fbase.db.collection(GALLERIES_URL).onSnapshot(handleSnapshot);
+      return () => unsubscribe();
     };
-    fbase.db.collection(GALLERIES_URL).onSnapshot(handleSnapshot);
+
+    if (!didCancel) {
+      handleCollection();
+    }
+
+    return () => {
+      didCancel = true;
+    };
   }, [fbase.db]);
+
+  const toggleNewItemPanel = () => {
+    setNewItemPanelVisible(!isNewItemPanelVisible);
+  };
 
   return (
     <StyledWrapper>
@@ -34,6 +70,8 @@ const GalleryList = () => {
           <GalleryCard {...gallery} />
         </div>
       ))}
+      <StyledButtonImage onClick={toggleNewItemPanel} image={plusImage} />
+      <GalleryNewItemPanel handleClose={toggleNewItemPanel} isVisible={isNewItemPanelVisible} />
     </StyledWrapper>
   );
 };
