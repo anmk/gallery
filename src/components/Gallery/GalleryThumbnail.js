@@ -2,14 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import GalleryPhotoUpload from 'components/Gallery/GalleryPhotoUpload';
+import GalleryPhotoLocation from 'components/Gallery/GalleryPhotoLocation';
 import { Paragraph, Button } from 'components/shared';
 import {
   StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
-import FirebaseContext from '../../firebase/context';
-
+import AppContext from 'context';
 
 const StyledThumbnailWrapper = styled(StyledGalleryWrapper)`
   flex-direction: column;
@@ -44,14 +43,27 @@ const StyledPhoto = styled(StyledGalleryImage)`
 const GalleryThumbnail = () => {
   const COLLECTION_URL = 'galleries';
   const { gid } = useParams();
-  const { fbase } = useContext(FirebaseContext);
+  const { fbase } = useContext(AppContext);
   const [gallery, setGallery] = useState([]);
 
   useEffect(() => {
-    fbase.db.doc(`${COLLECTION_URL}/${gid}`).onSnapshot((doc) => {
-      const galleryInfo = doc.data();
-      setGallery(galleryInfo);
-    });
+    let didCancel = false;
+
+    const uploadData = async () => {
+      const unsubscribe = await fbase.db.doc(`${COLLECTION_URL}/${gid}`).onSnapshot((doc) => {
+        const galleryInfo = doc.data();
+        setGallery(galleryInfo);
+      });
+      return () => unsubscribe();
+    };
+
+    if (!didCancel) {
+      uploadData();
+    }
+
+    return () => {
+      didCancel = true;
+    };
   }, [fbase.db, gid]);
 
   return (
@@ -62,7 +74,7 @@ const GalleryThumbnail = () => {
       <StyledInnerThumbnailWrapper>
         <StyledPhoto src={gallery?.imageUrl || noImageAvailable} alt={gallery?.name} />
         <StyledUploadContainer>
-          <GalleryPhotoUpload />
+          <GalleryPhotoLocation />
         </StyledUploadContainer>
       </StyledInnerThumbnailWrapper>
       <StyledThumbnailElement>
