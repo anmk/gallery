@@ -8,7 +8,7 @@ export const theme = {
   photos: 'hsl(122, 39%, 49%)',
   dashboard: 'hsl(231, 48%, 48%)',
   success: 'hsl(122, 39%, 49%)',
-  error: 'hsl(4, 90%, 58%)',
+  alert: 'hsl(4, 90%, 58%)',
   veryLightGrey: 'hsl(0, 0%, 88%)',
   lightGrey: 'hsl(0, 0%, 81%)',
   middleGrey: 'hsl(0, 0%, 62%)',
