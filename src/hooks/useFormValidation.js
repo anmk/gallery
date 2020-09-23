@@ -10,6 +10,7 @@ const useFormValidation = (initialState, validate, authenticate) => {
     setValues({
       name: '',
       description: '',
+      nameInStorage: '',
       imageUrl: '',
     });
   };
