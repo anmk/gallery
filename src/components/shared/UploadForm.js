@@ -12,6 +12,7 @@ import { Input, Textarea, Button } from 'components/shared';
 const INITIAL_STATE = {
   name: '',
   description: '',
+  nameInStorage: '',
   imageUrl: '',
 };
 
@@ -87,9 +88,14 @@ const UploadForm = ({ photoLocation }) => {
 
     const prepareData = () => {
       values.imageUrl = dataResponse?.downloadUrl;
+      values.nameInStorage = dataResponse?.nameInStorage;
 
       if (!values.imageUrl) {
         values.imageUrl = '';
+      }
+
+      if (!values.nameInStorage) {
+        values.nameInStorage = '';
       }
 
       if (values.imageUrl.length > 0 && Object.keys(errors).length === 0) {
