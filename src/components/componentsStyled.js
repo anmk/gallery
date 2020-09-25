@@ -16,5 +16,5 @@ export const StyledFormError = styled.p`
   ${StyledFormFont};
   padding: 0;
   margin: 0;
-  color: ${({ theme }) => theme.error}; 
+  color: ${({ theme }) => theme.alert}; 
 `;
