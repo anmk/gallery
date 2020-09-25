@@ -6,32 +6,35 @@ function useStorageUpload() {
   const [fileData, setFileData] = useState();
   const [progress, setProgress] = useState(null);
 
-  const setUp = (_value) => {
-    const fName = `${new Date().getTime()}-${_value.name}`;
-    const ref = fbase.storage().ref(`images/${fName}`);
-    return ref.put(_value);
+  const setUp = (value) => {
+    const fName = `${new Date().getTime()}-${value.name}`;
+    const refer = fbase.storage().ref(`images/${fName}`);
+    return refer.put(value);
   };
 
   useEffect(() => {
     let didCancel = false;
 
     const uploadData = async () => {
-      setProgress({ value: 0 });
+      setProgress({ pValue: 0 });
       const uploadTask = setUp(fileData);
+      const fullPath = uploadTask.location_.path;
+      const nameInStorage = fullPath.substr(7);
       uploadTask.on(
         fbase.storage.TaskEvent.STATE_CHANGED,
-        (_progress) => {
-          const value = _progress.bytesTransferred / _progress.totalBytes;
-          setProgress({ value });
+        (progressV) => {
+          const pValue = progressV.bytesTransferred / progressV.totalBytes;
+          setProgress({ pValue });
         },
-        (_error) => {
-          console.error('Error: ', _error);
+        (err) => {
+          console.error('Error: ', err);
         },
         async () => {
           const unsubscribe = await uploadTask.snapshot.ref.getDownloadURL();
           setDataResponse({
             metaData: uploadTask.snapshot.metadata,
             downloadUrl: unsubscribe,
+            nameInStorage,
           });
           setProgress(null);
           return () => unsubscribe();
@@ -54,4 +57,5 @@ function useStorageUpload() {
     setFileData,
   };
 }
+
 export default useStorageUpload;
