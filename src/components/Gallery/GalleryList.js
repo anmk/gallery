@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { ButtonImage } from 'components/shared';
+import { StyledButtonImage } from 'components/Gallery/galleryStyled';
 import GalleryCard from 'components/Gallery/GalleryCard';
 import GalleryNewItemPanel from 'components/Gallery/GalleryNewItemPanel';
 import plusImage from 'assets/images/plus.svg';
+
 import AppContext from 'context';
 
 const StyledWrapper = styled.div`
@@ -16,16 +17,14 @@ const StyledWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const StyledButtonImage = styled(ButtonImage)`
+const StyledButtonListImage = styled(StyledButtonImage)`
   position: fixed;
   top: 12rem;
   right: 3rem;
   height: 4rem;
   width: 4rem;
-  background-color: ${({ theme }) => (theme.secondary)};
-  border: 2px solid ${({ theme }) => theme.darkGrey};
+  background-color: ${({ theme }) => theme.secondary};
   background-size: 40%;
-  outline: 0;
   z-index: 101;
 `;
 
@@ -70,7 +69,7 @@ const GalleryList = () => {
           <GalleryCard {...gallery} />
         </div>
       ))}
-      <StyledButtonImage onClick={toggleNewItemPanel} image={plusImage} />
+      <StyledButtonListImage onClick={toggleNewItemPanel} image={plusImage} />
       <GalleryNewItemPanel handleClose={toggleNewItemPanel} isVisible={isNewItemPanelVisible} />
     </StyledWrapper>
   );
