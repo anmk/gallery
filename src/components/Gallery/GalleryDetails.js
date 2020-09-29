@@ -9,10 +9,11 @@ import noImageAvailable from 'assets/images/no-image-available.svg';
 const StyledWrapper = styled(StyledGalleryWrapper)`
   height: 90px;
   width: 90px;
-  box-shadow: 0 3px 10px -3px hsla(0, 0%, 0%, 0.5);
-  border-radius: 5px;
   margin: 2px;
   background-color: ${({ theme }) => theme.veryLightGrey};
+  box-shadow: 0 3px 10px -3px hsla(0, 0%, 0%, 0.5);
+  border: 1px solid ${({ theme }) => theme.darkGrey};
+  border-radius: 5px;
   cursor: pointer;
 
   &.active {
