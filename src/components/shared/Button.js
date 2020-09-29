@@ -9,7 +9,7 @@ const Button = styled.button`
   justify-content: center;
   height: 3.2rem;
   background-color: ${({ theme }) => theme.secondary};
-  border: 1px solid ${({ theme }) => theme.darkGrey};
+  border: 2px solid ${({ theme }) => theme.darkGrey};
   border-radius: 5px;
   cursor: pointer;
   button:focus {outline:0;}
@@ -29,6 +29,12 @@ const Button = styled.button`
   ${({ secondary }) => (
     secondary && css`
       background-color: ${({ theme }) => theme.secondary};
+    `
+  )}
+
+  ${({ alert }) => (
+    alert && css`
+      background-color: ${({ theme }) => theme.alert};
     `
   )}
 
