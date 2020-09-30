@@ -4,17 +4,25 @@ import styled from 'styled-components';
 
 import { Button, Paragraph } from 'components/shared';
 import {
-  StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
+  StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage, StyledButtonImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
+import deleteImage from 'assets/images/icons8-cancel.svg';
 import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
   flex-flow: row wrap;
   justify-content: center;
   border: 0;
-  margin: 15px;
+  margin: 1.5rem;
   margin: 0 auto;
+  border: 1px solid ${({ theme }) => theme.darkGrey};
+`;
+
+const StyledGalleryHeadingWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const StyledGalleryElement = styled.div`
@@ -25,11 +33,16 @@ const StyledGalleryElement = styled.div`
 
 const StyledPhoto = styled(StyledGalleryImage)`
   margin-top: 1rem;
-  border-radius: 10px;
+  border-radius: 1rem;
 `;
 
 const StyledDescription = styled(Paragraph)`
   margin: 0 0 1rem 0;
+`;
+
+const StyledButtonDetailsItemImage = styled(StyledButtonImage)`
+  border-radius: 50%;
+  background-size: 140%;
 `;
 
 const GalleryDetailsItem = () => {
@@ -63,10 +76,24 @@ const GalleryDetailsItem = () => {
     };
   }, [fbase.db, gid, pid]);
 
+  const handleCardDelete = async () => {
+    await fbase.storage().ref('images').child(photo?.nameInStorage).delete()
+      .then(
+        console.log('Image has been deleted from storage!', ''),
+        await fbase.db.doc(`${COLLECTION_URL}/${gid}/${IMAGE_URLS}/${pid}`).delete()
+          .then(() => console.log('Image data from db has been deleted!', ''))
+          .catch((error) => console.log(error.message, '')),
+      )
+      .catch((error) => console.log(error.message, ''));
+  };
+
   return (
     <StyledWrapper>
       <StyledGalleryInnerWrapper>
-        <StyledGalleryHeading>{photo?.name}</StyledGalleryHeading>
+        <StyledGalleryHeadingWrapper>
+          <StyledGalleryHeading>{photo?.name}</StyledGalleryHeading>
+          <StyledButtonDetailsItemImage onClick={handleCardDelete} image={deleteImage} />
+        </StyledGalleryHeadingWrapper>
         <StyledPhoto src={photo?.imageUrl || noImageAvailable} alt={photo?.name} />
         <StyledDescription>{photo?.description}</StyledDescription>
         <StyledGalleryElement>
