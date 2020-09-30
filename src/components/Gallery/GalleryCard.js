@@ -11,16 +11,31 @@ import noImageAvailable from 'assets/images/no-image-available.svg';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
   height: 26.4rem;
-  flex-flow: row wrap;
-  justify-content: center;
-  margin: 15px;
+  margin: 1.5rem;
+  box-shadow: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
+  border: 1px solid ${({ theme }) => theme.darkGrey};
+  border-radius: 1rem;
   cursor: pointer;
+`;
+
+const StyledText = styled.div`
+   display: flex;
+   flex-direction: column;
+  justify-content: flex-start;
+`;
+
+const StyledHeader = styled.div`
+   display: flex;
+   flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 0;
+  padding-bottom: 0;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
   width: 28rem;
   margin-top: 1rem;
-  border-radius: 10px;
+  border-radius: 1rem;
 `;
 
 const GalleryCard = ({
@@ -36,8 +51,12 @@ const GalleryCard = ({
   return (
     <StyledWrapper type="button" onClick={handleCardClick}>
       <StyledGalleryInnerWrapper>
-        <StyledGalleryHeading>{name}</StyledGalleryHeading>
-        <Paragraph>{description}</Paragraph>
+        <StyledHeader>
+          <StyledText>
+            <StyledGalleryHeading>{name}</StyledGalleryHeading>
+            <Paragraph>{description}</Paragraph>
+          </StyledText>
+        </StyledHeader>
         <StyledPhoto src={imageUrl || noImageAvailable} alt={name} />
       </StyledGalleryInnerWrapper>
     </StyledWrapper>
