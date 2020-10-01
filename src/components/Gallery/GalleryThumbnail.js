@@ -12,7 +12,6 @@ import AppContext from 'context';
 
 const StyledThumbnailWrapper = styled(StyledGalleryWrapper)`
   flex-direction: column;
-  margin: 1.5rem;
 `;
 
 export const StyledInnerThumbnailWrapper = styled(StyledGalleryInnerWrapper)`
@@ -30,7 +29,7 @@ export const StyledThumbnailElement = styled.div`
 
 const StyledUploadContainer = styled.div`
   position: absolute;
-  top: 30px;
+  top: 3rem;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
