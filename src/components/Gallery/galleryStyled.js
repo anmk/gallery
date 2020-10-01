@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 
-import { Heading } from 'components/shared';
+import { Heading, ButtonImage } from 'components/shared';
 
-const StyledGalleryBorder = css`
+export const StyledGalleryBorder = css`
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 5px;
 `;
@@ -20,14 +20,19 @@ export const StyledGalleryImage = styled.img`
 `;
 
 export const StyledGalleryWrapper = styled.div`
-  ${StyledGalleryBorder}
   display: flex;
-  box-shadow: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
-  border-radius: 10px;
+  border-radius: 1rem;
   overflow: hidden;
-  margin-top: 2rem;
 `;
 
 export const StyledGalleryInnerWrapper = styled.div`
   padding: 1rem;
+`;
+
+export const StyledButtonImage = styled(ButtonImage)`
+  height: 3rem;
+  width: 3rem;
+  border: 2px solid ${({ theme }) => theme.darkGrey};
+  outline: 0;
+  z-index: 101;
 `;
