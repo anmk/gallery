@@ -3,6 +3,7 @@ import {
   BrowserRouter, Route, Routes, useNavigate,
 } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import { toast } from 'react-toastify';
 
 import { routes } from 'routes';
 import { theme } from 'theme/mainTheme';
@@ -18,6 +19,7 @@ import GalleryThumbnail from 'components/Gallery/GalleryThumbnail';
 import AppContext from 'context';
 import fbase from './firebase';
 
+toast.configure();
 const App = () => {
   const user = useAuth();
 
