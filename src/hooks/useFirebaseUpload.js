@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 
+import { onUpdateSuccess, onUpdateFailure } from 'toasts/toasts';
 import AppContext from 'context';
 
 function useFirebaseUpload(photoLocation) {
@@ -11,7 +12,9 @@ function useFirebaseUpload(photoLocation) {
     let didCancel = false;
 
     async function uploadDbData() {
-      const unsubscribe = await fbase.db.collection(photoLocation).add(isDbData);
+      const unsubscribe = await fbase.db.collection(photoLocation).add(isDbData)
+        .then(onUpdateSuccess('Data has been saved in the database!'))
+        .catch((error) => onUpdateFailure(error.message));
       return () => unsubscribe();
     }
 
