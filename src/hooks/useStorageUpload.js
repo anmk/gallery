@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+
+import { onUpdateSuccess, onUpdateFailure } from 'toasts/toasts';
 import fbase from '../firebase';
 
 function useStorageUpload() {
@@ -27,10 +29,12 @@ function useStorageUpload() {
           setProgress({ pValue });
         },
         (err) => {
-          console.error('Error: ', err);
+          onUpdateFailure(err.message);
         },
         async () => {
-          const unsubscribe = await uploadTask.snapshot.ref.getDownloadURL();
+          const unsubscribe = await uploadTask.snapshot.ref.getDownloadURL()
+            .then(onUpdateSuccess('Image has been saved in storage!'))
+            .catch((error) => onUpdateFailure(error.message));
           setDataResponse({
             metaData: uploadTask.snapshot.metadata,
             downloadUrl: unsubscribe,
