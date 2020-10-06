@@ -6,6 +6,7 @@ import { StyledOuterContainer, StyledFormError } from 'components/componentsStyl
 import {
   StyledAuthInput, StyledAuthHeading, StyledAuthWrapper, StyledAuthContainer, StyledAuthBox,
 } from 'components/auth/authStyled';
+import { onUpdateSuccess, onUpdateFailure, onUpdateInfo } from 'toasts/toasts';
 import AppContext from 'context';
 
 const StyledLocation = css`
@@ -18,6 +19,12 @@ const StyledButton = styled(Button)`
   ${StyledLocation}
 `;
 
+const StyledFormInfo = styled(StyledFormError)`
+  display: flex;
+  justify-content: center;
+  color: ${({ theme }) => theme.darkGrey}; 
+`;
+
 const ForgotPassword = () => {
   const { fbase } = useContext(AppContext);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
@@ -25,7 +32,12 @@ const ForgotPassword = () => {
   const [passwordResetError, setPasswordResetError] = useState(null);
 
   const firebaseResetPassword = async (email) => {
-    await fbase.auth.sendPasswordResetEmail(email);
+    await fbase.auth.sendPasswordResetEmail(email)
+      .then(
+        onUpdateSuccess('The request to change the password has been sent!'),
+        onUpdateInfo('Check email to reset password!'),
+      )
+      .catch((error) => onUpdateFailure(error.message));
   };
 
   const handleResetPassword = async () => {
@@ -53,7 +65,8 @@ const ForgotPassword = () => {
           <StyledButton secondary="true" onClick={handleResetPassword}>
             Reset password
           </StyledButton>
-          {userPasswordReset && <StyledFormError>Check email to reset password</StyledFormError>}
+          <StyledOuterContainer />
+          {userPasswordReset && <StyledFormInfo>Check email to reset password</StyledFormInfo>}
           {passwordResetError && <StyledFormError>{passwordResetError}</StyledFormError>}
         </StyledAuthBox>
       </StyledAuthContainer>
