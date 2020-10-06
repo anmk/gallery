@@ -9,6 +9,7 @@ import {
 import { StyledOuterContainer, StyledFormError } from 'components/componentsStyled';
 import useFormValidation from 'hooks/useFormValidation';
 import loginValidation from 'validations/loginValidation';
+import { onUpdateSuccess, onUpdateFailure } from 'toasts/toasts';
 import fbase from '../../firebase';
 
 const INITIAL_STATE = {
@@ -49,7 +50,9 @@ const StyledLink = styled.a`
 `;
 
 const firebaseLogout = async () => {
-  await fbase.auth.signOut();
+  await fbase.auth.signOut()
+    .then(onUpdateSuccess('Logout was successful!'))
+    .catch((error) => onUpdateFailure(error.message));
 };
 
 const Login = () => {
@@ -64,15 +67,20 @@ const Login = () => {
     const newUser = await fbase.auth.createUserWithEmailAndPassword(
       email,
       password,
-    );
+    )
+      .then(onUpdateSuccess('The account has been created!'))
+      .catch((error) => onUpdateFailure(error.message));
     const updateProfile = await newUser.user.updateProfile({
       displayName: name,
-    });
+    })
+      .catch((error) => onUpdateFailure(error.message));
     return updateProfile;
   };
 
   const firebaseLogin = async (email, password) => {
-    const signIn = await fbase.auth.signInWithEmailAndPassword(email, password);
+    const signIn = await fbase.auth.signInWithEmailAndPassword(email, password)
+      .then(onUpdateSuccess('Login was successful!'))
+      .catch((error) => onUpdateFailure(error.message));
     return signIn;
   };
 
@@ -84,7 +92,7 @@ const Login = () => {
         : await firebaseRegister(name, email, password);
       navigate('/galleries');
     } catch (err) {
-      // console.error('Authentication error', err);
+      onUpdateFailure(`Authentication error: ${err.message}`);
       setFirebaseError(err.message);
     }
   }
