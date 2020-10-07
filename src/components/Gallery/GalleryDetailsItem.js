@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { onUpdateSuccess, onUpdateFailure } from 'toasts/toasts';
 
 import { Button, Paragraph } from 'components/shared';
 import {
@@ -79,12 +80,18 @@ const GalleryDetailsItem = () => {
   const handleCardDelete = async () => {
     await fbase.storage().ref('images').child(photo?.nameInStorage).delete()
       .then(
-        console.log('Image has been deleted from storage!', ''),
+        onUpdateSuccess('Image has been removed from storage!'),
         await fbase.db.doc(`${COLLECTION_URL}/${gid}/${IMAGE_URLS}/${pid}`).delete()
-          .then(() => console.log('Image data from db has been deleted!', ''))
-          .catch((error) => console.log(error.message, '')),
+          .then(() => {
+            onUpdateSuccess('Image data has been removed from the database!');
+          })
+          .catch((error) => {
+            onUpdateFailure(error.message);
+          }),
       )
-      .catch((error) => console.log(error.message, ''));
+      .catch((error) => {
+        onUpdateFailure(error.message);
+      });
   };
 
   return (
