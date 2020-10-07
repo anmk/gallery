@@ -7,6 +7,7 @@ import { Paragraph } from 'components/shared';
 import {
   StyledGalleryWrapper, StyledGalleryHeading, StyledGalleryImage, StyledButtonImage,
 } from 'components/Gallery/galleryStyled';
+import { onUpdateSuccess, onUpdateFailure, onUpdateInfo } from 'toasts/toasts';
 import noImageAvailable from 'assets/images/no-image-available.svg';
 import deleteImage from 'assets/images/icons8-cancel.svg';
 import AppContext from 'context';
@@ -105,20 +106,18 @@ const GalleryItem = () => {
   }, [fbase.db, gid]);
 
   const handleCardDelete = async () => {
-    // console.log('Gallery: ', gallery.length);
-    // console.log('nameInStorage: ', info?.nameInStorage);
-    // console.log('name: ', info?.name);
     if (gallery.length > 0) {
-      console.log('Remove photos from Gallery: ', gallery.length);
+      onUpdateFailure('This gallery could not be deleted.');
+      onUpdateInfo(`There are ${gallery.length} photo(s) in this gallery. Remove all images to delete the gallery.`);
     } else {
       await fbase.storage().ref('images').child(info?.nameInStorage).delete()
         .then(
-          console.log('Card has been deleted from storage!', ''),
+          onUpdateSuccess('Image has been removed from storage!'),
           await fbase.db.doc(`${COLLECTION_URL}/${gid}`).delete()
-            .then(() => console.log('Card data from db has been deleted!', ''))
-            .catch((error) => console.log(error.message, '')),
+            .then(() => onUpdateSuccess('Card data has been removed from the database!'))
+            .catch((error) => onUpdateFailure(error.message)),
         )
-        .catch((error) => console.log(error.message, ''));
+        .catch((error) => onUpdateFailure(error.message));
       navigate(`/${COLLECTION_URL}`);
     }
   };
