@@ -29,7 +29,7 @@ export const StyledAuthWrapper = styled.div`
 `;
 
 export const StyledAuthContainer = styled.div`
-  width: 28rem;
+  width: 31rem;
 `;
 
 export const StyledAuthBox = styled.div`
