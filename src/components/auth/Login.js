@@ -10,6 +10,8 @@ import { StyledOuterContainer, StyledFormError } from 'components/componentsStyl
 import useFormValidation from 'hooks/useFormValidation';
 import loginValidation from 'validations/loginValidation';
 import { onUpdateSuccess, onUpdateFailure } from 'toasts/toasts';
+import eyeImage from 'assets/images/eye.svg';
+import eyeOffImage from 'assets/images/eye-off.svg';
 import fbase from '../../firebase';
 
 const INITIAL_STATE = {
@@ -28,11 +30,16 @@ const StyledLittleFont = css`
   text-decoration: none;
 `;
 
+const StyledFormField = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const StyledAuthElement = styled.div`
   margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 28rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -55,12 +62,24 @@ const firebaseLogout = async () => {
     .catch((error) => onUpdateFailure(error.message));
 };
 
+const StyledShowPasswordImage = styled.img`
+  margin: 1.5rem 0 0 .5rem;
+  padding: 1rem;
+  width: 2rem;
+  height: 2rem;
+  background-image: url(${({ image }) => image});
+  background-size: 100%;
+  transform: translate(-3rem, 0);
+  cursor: pointer;
+`;
+
 const Login = () => {
   const {
     handleChange, handleSubmit, handleBlur, isSubmitting, values, errors,
   } = useFormValidation(INITIAL_STATE, loginValidation, authenticateUser);
   const [firebaseError, setFirebaseError] = useState(null);
   const [login, setLogin] = useState(true);
+  const [isPasswordShow, setPasswordShow] = useState(false);
   const navigate = useNavigate();
 
   const firebaseRegister = async (name, email, password) => {
@@ -97,51 +116,64 @@ const Login = () => {
     }
   }
 
+  const togglePasswordShown = () => {
+    setPasswordShow(!isPasswordShow);
+  };
+
   return (
     <div>
       <StyledAuthWrapper>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <StyledAuthContainer>
             <StyledAuthBox>
-              <StyledAuthHeading>{login ? 'Login' : 'Create Account'}</StyledAuthHeading>
+              <StyledAuthElement>
+                <StyledAuthHeading>{login ? 'Login' : 'Create Account'}</StyledAuthHeading>
+              </StyledAuthElement>
               {!login && (
+                <StyledFormField>
+                  <StyledAuthElement>
+                    <StyledAuthInput
+                      onChange={handleChange}
+                      value={values.name}
+                      name="name"
+                      type="text"
+                      placeholder="Your name"
+                    />
+                    <StyledOuterContainer />
+                  </StyledAuthElement>
+                </StyledFormField>
+              )}
+              <StyledFormField>
                 <StyledAuthElement>
                   <StyledAuthInput
                     onChange={handleChange}
-                    value={values.name}
-                    name="name"
-                    type="text"
-                    placeholder="Your name"
-                    autoComplete="off"
+                    onBlur={handleBlur}
+                    value={values.email}
+                    name="email"
+                    type="email"
+                    placeholder="Your email"
                   />
-                  <StyledOuterContainer />
                 </StyledAuthElement>
-              )}
-              <StyledAuthElement>
-                <StyledAuthInput
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                  name="email"
-                  type="email"
-                  placeholder="Your email"
-                  autoComplete="off"
-                />
-              </StyledAuthElement>
+              </StyledFormField>
               <StyledOuterContainer>
                 {errors.email && <StyledFormError>{errors.email}</StyledFormError>}
               </StyledOuterContainer>
-              <StyledAuthElement>
-                <StyledAuthInput
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.password}
-                  name="password"
-                  type="password"
-                  placeholder="Your password"
-                  autoComplete="off"
+              <StyledFormField>
+                <StyledAuthElement>
+                  <StyledAuthInput
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    name="password"
+                    placeholder="Your password"
+                    type={isPasswordShow ? 'text' : 'password'}
+                  />
+                </StyledAuthElement>
+                <StyledShowPasswordImage
+                  onClick={togglePasswordShown}
+                  image={isPasswordShow ? eyeOffImage : eyeImage}
                 />
-              </StyledAuthElement>
+              </StyledFormField>
               <StyledOuterContainer>
                 {errors.password && <StyledFormError>{errors.password}</StyledFormError>}
                 {firebaseError && <StyledFormError>{firebaseError}</StyledFormError>}
@@ -156,15 +188,17 @@ const Login = () => {
                   {login ? 'Login' : 'Register'}
                 </StyledButton>
               </StyledAuthElement>
-              <StyledLink
-                type="button"
-                onClick={() => setLogin((prevLogin) => !prevLogin)}
-              >
-                {login ? 'Need to create account' : 'Already have an account?'}
-              </StyledLink>
-              <StyledLink as={NavLink} to="/forgot" type="button">
-                Forgot password?
-              </StyledLink>
+              <StyledAuthElement>
+                <StyledLink
+                  type="button"
+                  onClick={() => setLogin((prevLogin) => !prevLogin)}
+                >
+                  {login ? 'Need to create account' : 'Already have an account?'}
+                </StyledLink>
+                <StyledLink as={NavLink} to="/forgot" type="button">
+                  Forgot password?
+                </StyledLink>
+              </StyledAuthElement>
             </StyledAuthBox>
           </StyledAuthContainer>
         </form>
