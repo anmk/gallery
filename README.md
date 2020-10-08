@@ -25,8 +25,8 @@ Gallery uses the following open source projects for proper operation:
 **The most important views on your smartphone.** 
 
 *The description of the views is below in the desktop version.*
-![mobile01](https://user-images.githubusercontent.com/5839775/93632550-c96ab380-f9ed-11ea-94a2-86d1ebd314fb.jpg)    
-![mobile02](https://user-images.githubusercontent.com/5839775/93632648-f323da80-f9ed-11ea-99ad-bf2224189bbe.jpg)    
+![mobile01](https://user-images.githubusercontent.com/5839775/93632550-c96ab380-f9ed-11ea-94a2-86d1ebd314fb.jpg)&nbsp;
+![mobile02](https://user-images.githubusercontent.com/5839775/93632648-f323da80-f9ed-11ea-99ad-bf2224189bbe.jpg)&nbsp;
 ![mobile03](https://user-images.githubusercontent.com/5839775/93632666-fae37f00-f9ed-11ea-89e2-939a90ea88d8.jpg)
 
 ### :computer: Desktop: 
