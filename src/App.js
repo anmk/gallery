@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-  BrowserRouter, Route, Routes, useNavigate,
-} from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { toast } from 'react-toastify';
 
@@ -16,6 +14,7 @@ import Navbar from 'components/navigation/Navbar';
 import useAuth from 'hooks/useAuth';
 import ForgotPassword from 'components/auth/ForgotPassword';
 import GalleryThumbnail from 'components/Gallery/GalleryThumbnail';
+import RedirectTo from 'components/navigation/RedirectTo';
 import AppContext from 'context';
 import fbase from './firebase';
 
@@ -31,7 +30,7 @@ const App = () => {
           <AppContext.Provider value={{ user, fbase }}>
             <Navbar />
             <Routes>
-              <Route path={routes.main} element={<Main />} />
+              <Route path={routes.main} element={<RedirectTo path={routes.home} />} />
               <Route path={routes.home} element={<Home />} />
               <Route path={routes.galleryList}>
                 <Route path={routes.main} element={<GalleryList />} />
@@ -49,17 +48,6 @@ const App = () => {
       </ThemeProvider>
     </div>
   );
-};
-
-const Main = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    let didCancel = false;
-    const goToHomePage = () => navigate('/home');
-    if (!didCancel) { goToHomePage(); }
-    return () => { didCancel = true; };
-  }, [navigate]);
-  return ('');
 };
 
 const Home = () => (
