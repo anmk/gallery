@@ -3,7 +3,7 @@ export const routes = {
   home: 'home',
   galleryList: 'galleries',
   galleryItem: ':gid',
-  galleryDetailsItem: ':pid',
+  photoDetailsItem: ':pid',
   login: 'login',
   forgot: 'forgot',
   all: '*',
