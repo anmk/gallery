@@ -6,7 +6,6 @@ import {
 
 const Paragraph = styled.p`
   ${StyledGalleryBasicElement};
-  
   ::placeholder {
     ${StyledGalleryPlaceholderElement};
   }
