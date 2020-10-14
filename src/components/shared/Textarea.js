@@ -10,7 +10,6 @@ const Textarea = styled.textarea`
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 5px;
   padding-top: .5rem;
-
   ::placeholder {
     ${StyledGalleryPlaceholderElement};
   }
