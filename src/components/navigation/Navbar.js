@@ -51,17 +51,15 @@ const Navbar = () => {
           >Home
           </Button>
         </StyledLiList>
-        {user && (
-          <StyledLiList>
-            <Button
-              nav="true"
-              as={NavLink}
-              to="/galleries"
-              activeclass="active"
-            >Galleries
-            </Button>
-          </StyledLiList>
-        )}
+        <StyledLiList>
+          <Button
+            nav="true"
+            as={NavLink}
+            to="/galleries"
+            activeclass="active"
+          >Galleries
+          </Button>
+        </StyledLiList>
         <StyledLiList>
           {user ? (
             <Button
