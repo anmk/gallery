@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import UploadForm from 'components/shared/UploadForm';
 import { Heading } from 'components/shared';
+import AppContext from 'context';
 
-const GalleryPhotoLocation = () => {
+const PhotoLocation = () => {
   const COLLECTION_URL = 'galleries';
   const IMAGE_URLS = 'imageUrls';
   const { gid } = useParams();
+  const { user } = useContext(AppContext);
 
   const handleLocation = () => {
     const dbLocation = `/${COLLECTION_URL}/${gid}/${IMAGE_URLS}`;
@@ -16,10 +18,14 @@ const GalleryPhotoLocation = () => {
 
   return (
     <>
-      <Heading>Add new photo</Heading>
-      <UploadForm photoLocation={handleLocation} />
+      {user && (
+        <>
+          <Heading>Add new photo</Heading>
+          <UploadForm photoLocation={handleLocation} />
+        </>
+      )}
     </>
   );
 };
 
-export default GalleryPhotoLocation;
+export default PhotoLocation;
