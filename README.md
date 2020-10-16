@@ -30,7 +30,7 @@ ___
 ![mobile02](https://user-images.githubusercontent.com/5839775/93632648-f323da80-f9ed-11ea-99ad-bf2224189bbe.jpg)
 ___
 ![mobile03](https://user-images.githubusercontent.com/5839775/93632666-fae37f00-f9ed-11ea-89e2-939a90ea88d8.jpg)
-
+___
 ### :computer: Desktop: 
 **Different views from the desktop.**  
 :point_right: *View of the "Galleries" tab.* :point_down:
@@ -80,3 +80,4 @@ ___
 ___
 :point_right: *View of Oliver's photos.* :point_down:
 ![desktop30-31](https://user-images.githubusercontent.com/5839775/93633001-8ceb8780-f9ee-11ea-8c7e-3c0f1ed9440e.jpg)
+___
