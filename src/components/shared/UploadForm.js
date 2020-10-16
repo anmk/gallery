@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect, useState, useRef, useContext,
+} from 'react';
 import { PropTypes } from 'prop-types';
 import styled, { css } from 'styled-components';
 
@@ -8,6 +10,9 @@ import useFirebaseUpload from 'hooks/useFirebaseUpload';
 import useFormValidation from 'hooks/useFormValidation';
 import { StyledOuterContainer, StyledFormError } from 'components/componentsStyled';
 import { Input, Textarea, Button } from 'components/shared';
+import AppContext from 'context';
+import eyeImage from 'assets/images/eye.svg';
+import eyeOffImage from 'assets/images/eye-off.svg';
 
 const INITIAL_STATE = {
   name: '',
@@ -30,9 +35,21 @@ const StyledUploadWrapper = styled.div`
   ${StyledFlexPreferences};
 `;
 
-const StyledUploadElement = styled.div`
+const StyledFormElement = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+`;
+
+const StyledFormText = styled.div`
+  padding: .3rem 1rem;
+  display: flex;
+  align-items: baseline;
+  color: ${({ theme }) => theme.veryDarkGrey};
+`;
+
+const StyledFormField = styled.div`
   ${StyledFlexPreferences};
-  justify-content: center;
   margin-top: 1.5rem;
   width: 100%;
 `;
@@ -47,10 +64,27 @@ const InputLoader = styled(Input)`
 `;
 
 const ButtonLoader = styled(Button)`
+  margin-top: 1rem;
   &:disabled {
     color: ${({ theme }) => theme.veryDarkGrey};
     background-color: ${({ theme }) => theme.lightGrey};
     border: 1px solid ${({ theme }) => theme.darkGrey};
+  }
+`;
+
+const LabelShared = styled.label`
+  background-image: url(${eyeOffImage});
+  background-repeat: no-repeat;
+  padding-left: 3rem;
+  display: flex;
+  align-items: baseline;
+  cursor: pointer;
+`;
+
+const InputShared = styled(Input)`
+  display: none;
+  &:checked + ${LabelShared} {
+    background-image: url(${eyeImage});
   }
 `;
 
@@ -61,7 +95,9 @@ const StyledProgress = styled.progress`
 const UploadForm = ({ photoLocation }) => {
   const [isDbSubmitting, setDbSubmitting] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isShare, setShare] = useState(false);
   const inputLoader = useRef(null);
+  const { user } = useContext(AppContext);
 
   const {
     dataResponse, progress, setFileData,
@@ -80,24 +116,19 @@ const UploadForm = ({ photoLocation }) => {
     setTimeout(() => {
       clearErrors();
       dataResponse.downloadUrl = '';
+      setShare(false);
     }, 0);
   };
 
   useEffect(() => {
     let didCancel = false;
-
     const prepareData = () => {
       values.imageUrl = dataResponse?.downloadUrl;
       values.nameInStorage = dataResponse?.nameInStorage;
-
-      if (!values.imageUrl) {
-        values.imageUrl = '';
-      }
-
-      if (!values.nameInStorage) {
-        values.nameInStorage = '';
-      }
-
+      values.share = isShare;
+      if (user) { values.userId = user?.uid; }
+      if (!values.imageUrl) { values.imageUrl = ''; }
+      if (!values.nameInStorage) { values.nameInStorage = ''; }
       if (values.imageUrl.length > 0 && Object.keys(errors).length === 0) {
         setIsDisabled(false);
       } else {
@@ -130,18 +161,22 @@ const UploadForm = ({ photoLocation }) => {
     return () => {
       didCancel = true;
     };
-  }, [dataResponse, values, errors, isDbSubmitting, setReadyToSend]);
+  }, [dataResponse, values, errors, isDbSubmitting, setReadyToSend, user, isShare]);
 
   const handleDbSubmit = (event) => {
     event.preventDefault();
     setDbSubmitting(true);
   };
 
+  const handleCheckbox = () => {
+    setShare(!isShare);
+  };
+
   return (
     <>
       <form autoComplete="off" onSubmit={handleDbSubmit}>
         <StyledUploadWrapper>
-          <StyledUploadElement>
+          <StyledFormField>
             <Input
               onBlur={handleBlur}
               onChange={handleChange}
@@ -153,8 +188,8 @@ const UploadForm = ({ photoLocation }) => {
             <StyledOuterContainer>
               {errors?.name && <StyledFormError>{errors?.name}</StyledFormError>}
             </StyledOuterContainer>
-          </StyledUploadElement>
-          <StyledUploadElement>
+          </StyledFormField>
+          <StyledFormField>
             <Textarea
               onBlur={handleBlur}
               onChange={handleChange}
@@ -163,9 +198,12 @@ const UploadForm = ({ photoLocation }) => {
               placeholder="Description"
               type="text"
             />
-          </StyledUploadElement>
+            <StyledOuterContainer>
+              {errors?.description && <StyledFormError>{errors?.description}</StyledFormError>}
+            </StyledOuterContainer>
+          </StyledFormField>
           <StyledOuterContainer />
-          <StyledUploadElement>
+          <StyledFormField>
             <InputLoader
               id="input-loader"
               ref={inputLoader}
@@ -175,9 +213,23 @@ const UploadForm = ({ photoLocation }) => {
                 setFileData(e.target.files[0]);
               }}
             />
-          </StyledUploadElement>
+          </StyledFormField>
           <StyledOuterContainer />
-          <StyledUploadElement>
+          <StyledFormField>
+            <StyledFormElement>
+              <InputShared
+                id="input-shared-checkbox"
+                value={values.share}
+                name="share"
+                type="checkbox"
+                checked={isShare}
+                onChange={handleCheckbox}
+              />
+              <LabelShared htmlFor="input-shared-checkbox" />
+              <StyledFormText>Visible to all users?</StyledFormText>
+            </StyledFormElement>
+          </StyledFormField>
+          <StyledFormField>
             <ButtonLoader
               id="button-loader"
               type="submit"
@@ -188,15 +240,15 @@ const UploadForm = ({ photoLocation }) => {
               value={values.imageUrl}
             >Add a photo to application
             </ButtonLoader>
-          </StyledUploadElement>
+          </StyledFormField>
         </StyledUploadWrapper>
       </form>
       <StyledOuterContainer />
-      <StyledUploadElement>
+      <StyledFormField>
         {(progress) && (
           <StyledProgress value={progress?.value} />
         )}
-      </StyledUploadElement>
+      </StyledFormField>
     </>
   );
 };
