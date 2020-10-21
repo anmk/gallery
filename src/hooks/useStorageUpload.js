@@ -32,16 +32,16 @@ function useStorageUpload() {
           onUpdateFailure(err.message);
         },
         async () => {
-          const unsubscribe = await uploadTask.snapshot.ref.getDownloadURL()
+          const uploadToStorageUnsubscribe = await uploadTask.snapshot.ref.getDownloadURL()
             .then(onUpdateSuccess('Image has been saved in storage!'))
             .catch((error) => onUpdateFailure(error.message));
           setDataResponse({
             metaData: uploadTask.snapshot.metadata,
-            downloadUrl: unsubscribe,
+            downloadUrl: uploadToStorageUnsubscribe,
             nameInStorage,
           });
           setProgress(null);
-          return () => unsubscribe();
+          return () => uploadToStorageUnsubscribe();
         },
       );
     };
