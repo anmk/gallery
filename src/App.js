@@ -8,7 +8,7 @@ import { theme } from 'theme/mainTheme';
 import GlobalStyle from 'theme/GlobalStyle';
 import Login from 'components/auth/Login';
 import GalleryList from 'components/Gallery/GalleryList';
-import GalleryDetailsItem from 'components/Gallery/GalleryDetailsItem';
+import PhotoDetailsItem from 'components/Gallery/PhotoDetailsItem';
 import GalleryItem from 'components/Gallery/GalleryItem';
 import Navbar from 'components/navigation/Navbar';
 import useAuth from 'hooks/useAuth';
@@ -36,7 +36,7 @@ const App = () => {
                 <Route path={routes.main} element={<GalleryList />} />
                 <Route path={routes.galleryItem} element={<GalleryItem />}>
                   <Route path={routes.main} element={<GalleryThumbnail />} />
-                  <Route path={routes.galleryDetailsItem} element={<GalleryDetailsItem />} />
+                  <Route path={routes.photoDetailsItem} element={<PhotoDetailsItem />} />
                 </Route>
               </Route>
               <Route path={routes.login} element={<Login />} />
