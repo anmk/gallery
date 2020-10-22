@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import GalleryPhotoLocation from 'components/Gallery/GalleryPhotoLocation';
+import PhotoLocation from 'components/Gallery/PhotoLocation';
 import { Paragraph, Button } from 'components/shared';
 import {
   StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
-import AppContext from 'context';
+import useFirebaseSupplyGalleryData from 'hooks/useFirebaseSupplyGalleryData';
 
 const StyledThumbnailWrapper = styled(StyledGalleryWrapper)`
   flex-direction: column;
@@ -41,29 +41,9 @@ const StyledPhoto = styled(StyledGalleryImage)`
 
 const GalleryThumbnail = () => {
   const COLLECTION_URL = 'galleries';
+  const IMAGE_URLS = 'imageUrls';
   const { gid } = useParams();
-  const { fbase } = useContext(AppContext);
-  const [gallery, setGallery] = useState([]);
-
-  useEffect(() => {
-    let didCancel = false;
-
-    const uploadData = async () => {
-      const unsubscribe = await fbase.db.doc(`${COLLECTION_URL}/${gid}`).onSnapshot((doc) => {
-        const galleryInfo = doc.data();
-        setGallery(galleryInfo);
-      });
-      return () => unsubscribe();
-    };
-
-    if (!didCancel) {
-      uploadData();
-    }
-
-    return () => {
-      didCancel = true;
-    };
-  }, [fbase.db, gid]);
+  const { gallery } = useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid);
 
   return (
     <StyledThumbnailWrapper>
@@ -73,7 +53,7 @@ const GalleryThumbnail = () => {
       <StyledInnerThumbnailWrapper>
         <StyledPhoto src={gallery?.imageUrl || noImageAvailable} alt={gallery?.name} />
         <StyledUploadContainer>
-          <GalleryPhotoLocation />
+          <PhotoLocation />
         </StyledUploadContainer>
       </StyledInnerThumbnailWrapper>
       <StyledThumbnailElement>
