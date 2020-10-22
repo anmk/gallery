@@ -1,15 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useParams, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import GalleryDetails from 'components/Gallery/GalleryDetails';
 import { Paragraph } from 'components/shared';
 import {
-  StyledGalleryWrapper, StyledGalleryHeading, StyledGalleryImage, StyledButtonImage,
+  StyledGalleryWrapper,
+  StyledGalleryHeading,
+  StyledGalleryImage,
+  StyledButtonImage,
+  StyledVisible,
 } from 'components/Gallery/galleryStyled';
 import { onUpdateSuccess, onUpdateFailure, onUpdateInfo } from 'toasts/toasts';
 import noImageAvailable from 'assets/images/no-image-available.svg';
 import deleteImage from 'assets/images/icons8-cancel.svg';
+import eyeImage from 'assets/images/eye.svg';
+import eyeOffImage from 'assets/images/eye-off.svg';
+import useFirebaseSupplyGalleryData from 'hooks/useFirebaseSupplyGalleryData';
 import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
@@ -64,53 +71,17 @@ const StyledTitleText = styled.div`
 const GalleryItem = () => {
   const COLLECTION_URL = 'galleries';
   const IMAGE_URLS = 'imageUrls';
-  const { gid } = useParams();
   const navigate = useNavigate();
-  const { fbase } = useContext(AppContext);
-  const [info, setInfo] = useState([]);
-  const [gallery, setGallery] = useState([]);
-
-  useEffect(() => {
-    let didCancel = false;
-
-    const uploadData = async () => {
-      const handleSnapshot = (snapshot) => {
-        const photoList = snapshot.docs.map((doc) => ({
-          pid: doc.id, ...doc.data(),
-        }));
-        setGallery(photoList);
-      };
-      const firstUnsubscribe = await fbase.db.collection(COLLECTION_URL)
-        .doc(gid)
-        .collection(IMAGE_URLS)
-        .onSnapshot(handleSnapshot);
-      const secondUnsubscribe = await fbase.db.collection(COLLECTION_URL)
-        .doc(gid)
-        .onSnapshot((doc) => {
-          const galleryInfo = doc.data();
-          setInfo(galleryInfo);
-        });
-      return () => {
-        firstUnsubscribe();
-        secondUnsubscribe();
-      };
-    };
-
-    if (!didCancel) {
-      uploadData();
-    }
-
-    return () => {
-      didCancel = true;
-    };
-  }, [fbase.db, gid]);
+  const { gid } = useParams();
+  const { fbase, user } = useContext(AppContext);
+  const { galleryItemInfo, photos } = useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid);
 
   const handleCardDelete = async () => {
-    if (gallery.length > 0) {
+    if (photos.length > 0) {
       onUpdateFailure('This gallery could not be deleted.');
-      onUpdateInfo(`There are ${gallery.length} photo(s) in this gallery. Remove all images to delete the gallery.`);
+      onUpdateInfo(`There are ${photos.length} photo(s) in this gallery. Remove all images to delete the gallery.`);
     } else {
-      await fbase.storage().ref('images').child(info?.nameInStorage).delete()
+      await fbase.storage().ref('images').child(galleryItemInfo?.nameInStorage).delete()
         .then(
           onUpdateSuccess('Image has been removed from storage!'),
           await fbase.db.doc(`${COLLECTION_URL}/${gid}`).delete()
@@ -126,16 +97,23 @@ const GalleryItem = () => {
     <StyledWrapper>
       <StyledItem>
         <StyledTitle>
-          <StyledPhoto src={info?.imageUrl || noImageAvailable} alt={info?.name} />
+          <StyledPhoto src={galleryItemInfo?.imageUrl || noImageAvailable} alt={galleryItemInfo?.name} />
           <StyledTitleText>
-            <StyledGalleryHeading>{info?.name}</StyledGalleryHeading>
-            <Paragraph>{info?.description}</Paragraph>
+            <StyledGalleryHeading>{galleryItemInfo?.name}</StyledGalleryHeading>
+            <Paragraph>{galleryItemInfo?.description}</Paragraph>
+            {(user && user.uid === galleryItemInfo?.userId)
+          && (<StyledVisible src={(galleryItemInfo?.share && eyeImage) || eyeOffImage} alt={galleryItemInfo?.name} />
+          )}
           </StyledTitleText>
-          <StyledButtonItemImage onClick={handleCardDelete} image={deleteImage} />
+          <div>
+            {(user && user.uid === galleryItemInfo?.userId)
+            && (<StyledButtonItemImage onClick={handleCardDelete} image={deleteImage} />
+            )}
+          </div>
         </StyledTitle>
 
         <StyledBox>
-          {gallery.map((photo) => (
+          {photos.map((photo) => (
             <div key={photo?.pid}>
               <GalleryDetails {...photo} />
             </div>
