@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
 import { StyledButtonImage } from 'components/Gallery/galleryStyled';
 import GalleryCard from 'components/Gallery/GalleryCard';
 import GalleryNewItemPanel from 'components/Gallery/GalleryNewItemPanel';
 import plusImage from 'assets/images/plus.svg';
-
+import useFirebaseGalleryList from 'hooks/useFirebaseGalleryList';
 import AppContext from 'context';
 
 const StyledWrapper = styled.div`
@@ -29,34 +29,10 @@ const StyledButtonListImage = styled(StyledButtonImage)`
 `;
 
 const GalleryList = () => {
-  const GALLERIES_URL = 'galleries';
-  const { fbase } = useContext(AppContext);
-  const [galleries, setGalleries] = useState([]);
+  const COLLECTION_URL = 'galleries';
   const [isNewItemPanelVisible, setNewItemPanelVisible] = useState(false);
-
-  const handleSnapshot = (snapshot) => {
-    const galleryList = snapshot.docs.map((doc) => ({
-      gid: doc.id, ...doc.data(),
-    }));
-    setGalleries(galleryList);
-  };
-
-  useEffect(() => {
-    let didCancel = false;
-
-    const handleCollection = async () => {
-      const unsubscribe = await fbase.db.collection(GALLERIES_URL).onSnapshot(handleSnapshot);
-      return () => unsubscribe();
-    };
-
-    if (!didCancel) {
-      handleCollection();
-    }
-
-    return () => {
-      didCancel = true;
-    };
-  }, [fbase.db]);
+  const { user } = useContext(AppContext);
+  const { galleries } = useFirebaseGalleryList(COLLECTION_URL);
 
   const toggleNewItemPanel = () => {
     setNewItemPanelVisible(!isNewItemPanelVisible);
@@ -69,8 +45,12 @@ const GalleryList = () => {
           <GalleryCard {...gallery} />
         </div>
       ))}
-      <StyledButtonListImage onClick={toggleNewItemPanel} image={plusImage} />
-      <GalleryNewItemPanel handleClose={toggleNewItemPanel} isVisible={isNewItemPanelVisible} />
+      {user && (
+      <>
+        <StyledButtonListImage onClick={toggleNewItemPanel} image={plusImage} />
+        <GalleryNewItemPanel handleClose={toggleNewItemPanel} isVisible={isNewItemPanelVisible} />
+      </>
+      )}
     </StyledWrapper>
   );
 };
