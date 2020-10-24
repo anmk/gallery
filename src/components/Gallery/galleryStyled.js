@@ -19,6 +19,10 @@ export const StyledGalleryImage = styled.img`
   align-self: center;
 `;
 
+export const StyledVisible = styled(StyledGalleryImage)`
+  border: none;
+`;
+
 export const StyledGalleryWrapper = styled.div`
   display: flex;
   border-radius: 1rem;
