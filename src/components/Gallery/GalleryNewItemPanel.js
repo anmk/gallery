@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PropTypes } from 'prop-types';
 import styled from 'styled-components';
 
 import UploadForm from 'components/shared/UploadForm';
 import { Heading } from 'components/shared';
+import AppContext from 'context';
 
 const StyledWrapper = styled.div`
   border-left: 10px solid ${({ theme }) => theme.primary};
@@ -25,6 +26,7 @@ const StyledWrapper = styled.div`
 
 const GalleryNewItemPanel = ({ isVisible }) => {
   const COLLECTION_URL = 'galleries';
+  const { user } = useContext(AppContext);
 
   const handleLocation = () => {
     const dbLocation = `/${COLLECTION_URL}`;
@@ -33,8 +35,12 @@ const GalleryNewItemPanel = ({ isVisible }) => {
 
   return (
     <StyledWrapper isVisible={isVisible}>
-      <Heading>Create new gallery</Heading>
-      <UploadForm photoLocation={handleLocation} />
+      {user && (
+        <>
+          <Heading>Create new gallery</Heading>
+          <UploadForm photoLocation={handleLocation} />
+        </>
+      )}
     </StyledWrapper>
   );
 };
