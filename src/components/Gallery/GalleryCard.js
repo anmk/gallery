@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PropTypes } from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -8,6 +8,9 @@ import {
   StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
+import eyeImage from 'assets/images/eye.svg';
+import eyeOffImage from 'assets/images/eye-off.svg';
+import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
   height: 26.4rem;
@@ -18,18 +21,16 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
   cursor: pointer;
 `;
 
-const StyledText = styled.div`
-   display: flex;
-   flex-direction: column;
-  justify-content: flex-start;
-`;
-
 const StyledHeader = styled.div`
-   display: flex;
-   flex-direction: row;
-  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 0;
   padding-bottom: 0;
+`;
+
+const StyledTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
@@ -38,28 +39,37 @@ const StyledPhoto = styled(StyledGalleryImage)`
   border-radius: 1rem;
 `;
 
+const StyledVisible = styled.img`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const GalleryCard = ({
-  gid, name, description, imageUrl,
+  gid, name, description, imageUrl, userId, share,
 }) => {
   const COLLECTION_URL = 'galleries';
   const navigate = useNavigate();
+  const { user } = useContext(AppContext);
 
   const handleCardClick = () => (
     navigate(`/${COLLECTION_URL}/${gid}`)
   );
 
   return (
-    <StyledWrapper type="button" onClick={handleCardClick}>
-      <StyledGalleryInnerWrapper>
-        <StyledHeader>
-          <StyledText>
-            <StyledGalleryHeading>{name}</StyledGalleryHeading>
-            <Paragraph>{description}</Paragraph>
-          </StyledText>
-        </StyledHeader>
-        <StyledPhoto src={imageUrl || noImageAvailable} alt={name} />
-      </StyledGalleryInnerWrapper>
-    </StyledWrapper>
+    ((user && user.uid === userId) || share === true) && (
+      <StyledWrapper type="button" onClick={handleCardClick}>
+        <StyledGalleryInnerWrapper>
+          <StyledHeader>
+            <StyledTitle>
+              <StyledGalleryHeading>{name}</StyledGalleryHeading>
+              {user && (<StyledVisible src={share ? eyeImage : eyeOffImage} />)}
+            </StyledTitle>
+            <Paragraph>{description || '\u00A0'}</Paragraph>
+          </StyledHeader>
+          <StyledPhoto src={imageUrl || noImageAvailable} alt={name} />
+        </StyledGalleryInnerWrapper>
+      </StyledWrapper>
+    )
   );
 };
 
@@ -68,6 +78,8 @@ GalleryCard.propTypes = {
   name: PropTypes.string,
   description: PropTypes.string,
   imageUrl: PropTypes.string,
+  userId: PropTypes.string,
+  share: PropTypes.bool,
 };
 
 GalleryCard.defaultProps = {
@@ -75,6 +87,8 @@ GalleryCard.defaultProps = {
   name: '',
   description: '',
   imageUrl: '',
+  userId: '',
+  share: false,
 };
 
 export default GalleryCard;
