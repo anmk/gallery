@@ -6,13 +6,14 @@ import { toast } from 'react-toastify';
 import { routes } from 'routes';
 import { theme } from 'theme/mainTheme';
 import GlobalStyle from 'theme/GlobalStyle';
-import Login from 'components/auth/Login';
+import Home from 'components/Home/Home';
+import Login from 'components/Auth/Login';
 import GalleryList from 'components/Gallery/GalleryList';
 import PhotoDetailsItem from 'components/Gallery/PhotoDetailsItem';
 import GalleryItem from 'components/Gallery/GalleryItem';
 import Navbar from 'components/navigation/Navbar';
 import useAuth from 'hooks/useAuth';
-import ForgotPassword from 'components/auth/ForgotPassword';
+import ForgotPassword from 'components/Auth/ForgotPassword';
 import GalleryThumbnail from 'components/Gallery/GalleryThumbnail';
 import RedirectTo from 'components/navigation/RedirectTo';
 import AppContext from 'context';
@@ -49,12 +50,6 @@ const App = () => {
     </div>
   );
 };
-
-const Home = () => (
-  <div>
-    <h1>Welcome Home!</h1>
-  </div>
-);
 
 const NotFound = () => (
   <div>
