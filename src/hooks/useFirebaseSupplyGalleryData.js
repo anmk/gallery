@@ -26,7 +26,7 @@ function useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid, pid) {
         .doc(gid)
         .collection(IMAGE_URLS)
         .onSnapshot(handlePhotoList);
-        // For components: GalleryItem, GalleryThumbnail, PhotoDetailsItem - only isShare
+      // For components: GalleryItem, GalleryThumbnail, PhotoDetailsItem - only isShare
       const galleryDataUnsubscribe = await fbase.db
         .collection(COLLECTION_URL)
         .doc(gid)
@@ -34,7 +34,7 @@ function useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid, pid) {
           const galleryData = doc.data();
           setGalleryItemInfo(galleryData);
           setGallery(galleryData);
-          setShare(galleryData.share);
+          setShare(galleryData?.share);
         });
       const photoDetailsItemUnsubscribe = await fbase.db
         .doc(`${COLLECTION_URL}/${gid}/${IMAGE_URLS}/${pid}`)
