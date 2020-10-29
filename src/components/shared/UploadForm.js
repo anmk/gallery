@@ -22,7 +22,10 @@ const INITIAL_STATE = {
 };
 
 const StyledUploadForm = css`
-  width: 28rem;
+  width: 20rem;
+  @media only screen and (min-width: 768px) {
+    width: 28rem;
+  }
 `;
 
 const StyledFlexPreferences = css`
@@ -38,13 +41,14 @@ const StyledUploadWrapper = styled.div`
 const StyledFormElement = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
 `;
 
 const StyledFormText = styled.div`
-  padding: .3rem 1rem;
+  padding: .4rem 1rem;
   display: flex;
   align-items: baseline;
+  font-size: ${({ theme }) => theme.fontSize.xs};
   color: ${({ theme }) => theme.veryDarkGrey};
 `;
 
