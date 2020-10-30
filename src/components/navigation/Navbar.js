@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button } from 'components/shared';
-import { firebaseLogout } from 'components/auth/Login';
+import { firebaseLogout } from 'components/Auth/Login';
 import AppContext from 'context';
 
 const StyledWrapper = styled.nav`
@@ -12,9 +12,6 @@ const StyledWrapper = styled.nav`
   flex-direction: row;
   align-items: center;
   background-color: ${({ theme }) => theme.primary};
-  @media (max-width: 600px) {
-    display: none;
-  }
 `;
 
 const StyledUlList = styled.ul`
