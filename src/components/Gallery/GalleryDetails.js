@@ -8,6 +8,7 @@ import noImageAvailable from 'assets/images/no-image-available.svg';
 import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
+  display: flex;
   height: 90px;
   width: 90px;
   margin: 2px;
@@ -16,7 +17,6 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 5px;
   cursor: pointer;
-
   &.active {
     background-color: ${({ theme }) => theme.middleGrey};
     border: 2px solid ${({ theme }) => theme.primary};
