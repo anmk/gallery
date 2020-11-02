@@ -37,16 +37,18 @@ const StyledGalleryHeadingWrapper = styled.div`
 const StyledGalleryElement = styled.div`
   display: flex;
   justify-content: space-between;
-  position: relative;
+  align-items: center;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
   margin-top: 1rem;
   border-radius: 1rem;
+  max-width: 100%;
+  height: auto;
 `;
 
 const StyledDescription = styled(Paragraph)`
-  margin: 0 0 1rem 0;
+  margin: 1rem 0;
 `;
 
 const StyledVisibleDescription = styled(Paragraph)`
@@ -57,6 +59,11 @@ const StyledVisibleDescription = styled(Paragraph)`
 const StyledButtonDetailsItemImage = styled(StyledButtonImage)`
   border-radius: 50%;
   background-size: 140%;
+`;
+
+export const StyledGalleryPhotoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const PhotoDetailsItem = () => {
@@ -96,8 +103,10 @@ const PhotoDetailsItem = () => {
           && (<StyledButtonDetailsItemImage onClick={handlePhotoDelete} image={deleteImage} />
           )}
         </StyledGalleryHeadingWrapper>
-        <StyledPhoto src={photoDetails?.imageUrl || noImageAvailable} alt={photoDetails?.name} />
-        <StyledDescription>{photoDetails?.description}</StyledDescription>
+        <StyledGalleryPhotoWrapper>
+          <StyledPhoto src={photoDetails?.imageUrl || noImageAvailable} alt={photoDetails?.name} />
+        </StyledGalleryPhotoWrapper>
+        <StyledDescription>{photoDetails?.description || '\u00A0'}</StyledDescription>
         <StyledGalleryElement>
           {(user && user.uid === photoDetails?.userId)
           && (<Button secondary="true" as={Link} to="../">Add photos</Button>
@@ -113,7 +122,7 @@ const PhotoDetailsItem = () => {
           />
           )}
           {(user && user.uid === photoDetails?.userId) && !isShare && photoDetails?.share
-          && (<StyledVisibleDescription>Because the invisible gallery is:</StyledVisibleDescription>
+          && (<StyledVisibleDescription>It would be, but since the invisible gallery is:</StyledVisibleDescription>
           )}
           {(user && user.uid === photoDetails?.userId) && !isShare && photoDetails?.share
           && (
