@@ -10,21 +10,21 @@ export const StyledGalleryBorder = css`
 export const StyledGalleryHeading = styled(Heading)`
   color: ${({ theme }) => theme.veryDarkGrey};
   font-size: ${({ theme }) => (theme.fontSize.m)};
+  text-align: center;
 `;
 
 export const StyledGalleryImage = styled.img`
-  max-width: 55rem;  
-  max-height: 55rem;
   ${StyledGalleryBorder}
   align-self: center;
 `;
 
 export const StyledVisible = styled(StyledGalleryImage)`
+  height: 2rem;
+  width: 2rem;
   border: none;
 `;
 
 export const StyledGalleryWrapper = styled.div`
-  display: flex;
   border-radius: 1rem;
   overflow: hidden;
 `;
