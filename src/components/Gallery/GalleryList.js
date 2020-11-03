@@ -13,14 +13,18 @@ const StyledWrapper = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 3rem;
   margin-top: 1rem;
+  padding: 3rem;
+  @media only screen and (max-width: 768px) {
+    margin-top: .5rem;
+    padding: .5rem;
+  }
 `;
 
 const StyledButtonListImage = styled(StyledButtonImage)`
   position: fixed;
   top: 12rem;
-  right: 3rem;
+  right: 2rem;
   height: 4rem;
   width: 4rem;
   background-color: ${({ theme }) => theme.secondary};
