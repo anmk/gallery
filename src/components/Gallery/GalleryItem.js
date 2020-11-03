@@ -3,7 +3,7 @@ import { useParams, Outlet, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import GalleryDetails from 'components/Gallery/GalleryDetails';
-import { Paragraph } from 'components/shared';
+import { Row, Col, Paragraph } from 'components/shared';
 import {
   StyledGalleryWrapper,
   StyledGalleryHeading,
@@ -22,6 +22,10 @@ import AppContext from 'context';
 const StyledWrapper = styled(StyledGalleryWrapper)`
   padding: 3rem;
   justify-content: space-between;
+  min-height: 100rem;
+  @media only screen and (max-width: 768px) {
+    padding: 0 0 .5rem 0;
+  }
 `;
 
 const StyledTitle = styled.div`
@@ -36,7 +40,7 @@ const StyledTitle = styled.div`
 `;
 
 const StyledItem = styled.div`
-  width: 49%;
+  width: 96%;
   padding: 1rem;
   box-shadow: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
   border: 1px solid ${({ theme }) => theme.darkGrey};
@@ -95,35 +99,51 @@ const GalleryItem = () => {
 
   return (
     <StyledWrapper>
-      <StyledItem>
-        <StyledTitle>
-          <StyledPhoto src={galleryItemInfo?.imageUrl || noImageAvailable} alt={galleryItemInfo?.name} />
-          <StyledTitleText>
-            <StyledGalleryHeading>{galleryItemInfo?.name}</StyledGalleryHeading>
-            <Paragraph>{galleryItemInfo?.description}</Paragraph>
-            {(user && user.uid === galleryItemInfo?.userId)
-          && (<StyledVisible src={(galleryItemInfo?.share && eyeImage) || eyeOffImage} alt={galleryItemInfo?.name} />
-          )}
-          </StyledTitleText>
-          <div>
-            {(user && user.uid === galleryItemInfo?.userId)
-            && (<StyledButtonItemImage onClick={handleCardDelete} image={deleteImage} />
-            )}
-          </div>
-        </StyledTitle>
+      <Row>
+        <Col xs="12" sm="6" md="6" lg="6">
+          <StyledItem>
+            <StyledTitle>
+              <StyledPhoto
+                src={galleryItemInfo?.imageUrl || noImageAvailable}
+                alt={galleryItemInfo?.name}
+              />
+              <StyledTitleText>
+                <StyledGalleryHeading>{galleryItemInfo?.name}</StyledGalleryHeading>
+                <Paragraph>{galleryItemInfo?.description}</Paragraph>
+                {(user && user.uid === galleryItemInfo?.userId)
+              && (
+              <StyledVisible
+                src={(galleryItemInfo?.share && eyeImage) || eyeOffImage}
+                alt={galleryItemInfo?.name}
+              />
+              )}
+              </StyledTitleText>
+              <div>
+                {(user && user.uid === galleryItemInfo?.userId)
+                && (
+                <StyledButtonItemImage
+                  onClick={handleCardDelete}
+                  image={deleteImage}
+                />
+                )}
+              </div>
+            </StyledTitle>
 
-        <StyledBox>
-          {photos.map((photo) => (
-            <div key={photo?.pid}>
-              <GalleryDetails {...photo} />
-            </div>
-          ))}
-        </StyledBox>
-      </StyledItem>
-
-      <StyledItem>
-        <Outlet />
-      </StyledItem>
+            <StyledBox>
+              {photos.map((photo) => (
+                <div key={photo?.pid}>
+                  <GalleryDetails {...photo} />
+                </div>
+              ))}
+            </StyledBox>
+          </StyledItem>
+        </Col>
+        <Col xs="12" sm="6" md="6" lg="6">
+          <StyledItem>
+            <Outlet />
+          </StyledItem>
+        </Col>
+      </Row>
     </StyledWrapper>
   );
 };
