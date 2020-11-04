@@ -33,7 +33,7 @@ const StyledUploadContainer = styled.div`
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
-  width: 100%;
+  height: 38rem;
   margin-top: 1rem;
   border-radius: 1rem;
   opacity: 0.2;
