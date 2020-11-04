@@ -19,6 +19,12 @@ const StyledWrapper = styled(StyledGalleryWrapper)`
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 1rem;
   cursor: pointer;
+  @media only screen and (max-width: 400px) {
+    height: 24rem;
+  }
+  @media only screen and (max-width: 768px) {
+    margin: .5rem;
+  }
 `;
 
 const StyledHeader = styled.div`
@@ -34,9 +40,15 @@ const StyledTitle = styled.div`
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
-  width: 28rem;
+  width: 100%;
+  max-width: 28rem;
+  max-height: 18.7rem;
   margin-top: 1rem;
   border-radius: 1rem;
+  object-fit: cover;
+  @media only screen and (max-width: 400px) {
+    height: 16.4rem;
+  }
 `;
 
 const StyledVisible = styled.img`
