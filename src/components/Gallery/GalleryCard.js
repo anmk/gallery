@@ -5,7 +5,10 @@ import styled from 'styled-components';
 
 import { Paragraph } from 'components/shared';
 import {
-  StyledGalleryWrapper, StyledGalleryInnerWrapper, StyledGalleryHeading, StyledGalleryImage,
+  StyledGalleryWrapper,
+  StyledGalleryInnerWrapper,
+  StyledGalleryHeading,
+  StyledGalleryImage,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
 import eyeImage from 'assets/images/eye.svg';
@@ -13,15 +16,13 @@ import eyeOffImage from 'assets/images/eye-off.svg';
 import AppContext from 'context';
 
 const StyledWrapper = styled(StyledGalleryWrapper)`
-  height: 26.4rem;
+  width: 30rem;
+  height: 24rem;
   margin: 1.5rem;
   box-shadow: 0 10px 30px -10px hsla(0, 0%, 0%, 0.5);
   border: 1px solid ${({ theme }) => theme.darkGrey};
   border-radius: 1rem;
   cursor: pointer;
-  @media only screen and (max-width: 400px) {
-    height: 24rem;
-  }
   @media only screen and (max-width: 768px) {
     margin: .5rem;
   }
@@ -42,13 +43,10 @@ const StyledTitle = styled.div`
 const StyledPhoto = styled(StyledGalleryImage)`
   width: 100%;
   max-width: 28rem;
-  max-height: 18.7rem;
+  height: 16.4rem;
   margin-top: 1rem;
   border-radius: 1rem;
   object-fit: cover;
-  @media only screen and (max-width: 400px) {
-    height: 16.4rem;
-  }
 `;
 
 const StyledVisible = styled.img`
