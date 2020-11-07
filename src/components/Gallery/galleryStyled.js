@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { Heading, ButtonImage } from 'components/shared';
+import { Heading, ButtonImage, Paragraph } from 'components/shared';
 
 export const StyledGalleryBorder = css`
   border: 1px solid ${({ theme }) => theme.darkGrey};
@@ -39,4 +39,12 @@ export const StyledButtonImage = styled(ButtonImage)`
   border: 2px solid ${({ theme }) => theme.darkGrey};
   outline: 0;
   z-index: 101;
+`;
+
+export const StyledAuthInfo = styled(Paragraph)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.alert};
+  margin: 1rem 0;
 `;
