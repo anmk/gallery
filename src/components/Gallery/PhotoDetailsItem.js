@@ -11,6 +11,7 @@ import {
   StyledGalleryImage,
   StyledButtonImage,
   StyledVisible,
+  StyledAuthInfo,
 } from 'components/Gallery/galleryStyled';
 import noImageAvailable from 'assets/images/no-image-available.svg';
 import deleteImage from 'assets/images/icons8-cancel.svg';
@@ -37,14 +38,13 @@ const StyledGalleryHeadingWrapper = styled.div`
 const StyledGalleryElement = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
 `;
 
 const StyledPhoto = styled(StyledGalleryImage)`
   margin-top: 1rem;
   border-radius: 1rem;
   max-width: 100%;
-  height: auto;
+  max-height: 65rem;
 `;
 
 const StyledDescription = styled(Paragraph)`
@@ -73,6 +73,9 @@ const PhotoDetailsItem = () => {
   const { pid } = useParams();
   const { fbase, user } = useContext(AppContext);
   const { photoDetails, isShare } = useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid, pid);
+  const photoOwner = user && user.uid === photoDetails?.userId;
+  const photoGuard = photoOwner || (photoDetails?.share === true);
+  const visibilityRule = photoOwner && !isShare && photoDetails?.share;
 
   const handlePhotoDelete = async () => {
     !photoDetails && onUpdateFailure('The photo has already been deleted.');
@@ -97,34 +100,34 @@ const PhotoDetailsItem = () => {
   return (
     <StyledWrapper>
       <StyledGalleryInnerWrapper>
-        <StyledGalleryHeadingWrapper>
-          <StyledGalleryHeading>{photoDetails?.name}</StyledGalleryHeading>
-          {(user && user.uid === photoDetails?.userId)
-          && (<StyledButtonDetailsItemImage onClick={handlePhotoDelete} image={deleteImage} />
-          )}
-        </StyledGalleryHeadingWrapper>
-        <StyledGalleryPhotoWrapper>
-          <StyledPhoto src={photoDetails?.imageUrl || noImageAvailable} alt={photoDetails?.name} />
-        </StyledGalleryPhotoWrapper>
-        <StyledDescription>{photoDetails?.description || '\u00A0'}</StyledDescription>
+        {photoGuard && (
+          <>
+            <StyledGalleryHeadingWrapper>
+              <StyledGalleryHeading>{photoDetails?.name}</StyledGalleryHeading>
+              {photoOwner && (<StyledButtonDetailsItemImage onClick={handlePhotoDelete} image={deleteImage} />)}
+            </StyledGalleryHeadingWrapper>
+            <StyledGalleryPhotoWrapper>
+              <StyledPhoto src={photoDetails?.imageUrl || noImageAvailable} alt={photoDetails?.name} />
+            </StyledGalleryPhotoWrapper>
+            <StyledDescription>{photoDetails?.description || '\u00A0'}</StyledDescription>
+          </>
+        )}
+        {!photoGuard && (<StyledAuthInfo>You do not have access to this photo or it has been deleted.</StyledAuthInfo>)}
         <StyledGalleryElement>
-          {(user && user.uid === photoDetails?.userId)
-          && (<Button secondary="true" as={Link} to="../">Add photos</Button>
+          {photoOwner && (<Button secondary="true" as={Link} to="../">Add photos</Button>
           )}
           {!user
           && (<Button secondary="true" as={Link} to="../">Don&apos;t look at the photo</Button>
           )}
-          {(user && user.uid === photoDetails?.userId)
-          && (
+          {photoOwner && (
           <StyledVisible
             src={(photoDetails?.share && eyeImage) || eyeOffImage}
             alt={photoDetails?.name}
           />
           )}
-          {(user && user.uid === photoDetails?.userId) && !isShare && photoDetails?.share
-          && (<StyledVisibleDescription>It would be, but since the invisible gallery is:</StyledVisibleDescription>
-          )}
-          {(user && user.uid === photoDetails?.userId) && !isShare && photoDetails?.share
+          {visibilityRule
+          && (<StyledVisibleDescription>It would be, but since the invisible gallery is:</StyledVisibleDescription>)}
+          {visibilityRule
           && (
           <StyledVisible
             src={(isShare && photoDetails?.share && eyeImage) || eyeOffImage}
