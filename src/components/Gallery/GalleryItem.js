@@ -10,6 +10,7 @@ import {
   StyledGalleryImage,
   StyledButtonImage,
   StyledVisible,
+  StyledAuthInfo,
 } from 'components/Gallery/galleryStyled';
 import { onUpdateSuccess, onUpdateFailure, onUpdateInfo } from 'toasts/toasts';
 import noImageAvailable from 'assets/images/no-image-available.svg';
@@ -79,6 +80,8 @@ const GalleryItem = () => {
   const { gid } = useParams();
   const { fbase, user } = useContext(AppContext);
   const { galleryItemInfo, photos } = useFirebaseSupplyGalleryData(COLLECTION_URL, IMAGE_URLS, gid);
+  const galleryOwner = user && user.uid === galleryItemInfo?.userId;
+  const galleryGuard = (galleryOwner || (galleryItemInfo?.share === true));
 
   const handleCardDelete = async () => {
     if (photos.length > 0) {
@@ -110,25 +113,26 @@ const GalleryItem = () => {
               <StyledTitleText>
                 <StyledGalleryHeading>{galleryItemInfo?.name}</StyledGalleryHeading>
                 <Paragraph>{galleryItemInfo?.description}</Paragraph>
-                {(user && user.uid === galleryItemInfo?.userId)
-              && (
-              <StyledVisible
-                src={(galleryItemInfo?.share && eyeImage) || eyeOffImage}
-                alt={galleryItemInfo?.name}
-              />
-              )}
+                {galleryOwner
+                  && (
+                    <StyledVisible
+                      src={(galleryItemInfo?.share && eyeImage) || eyeOffImage}
+                      alt={galleryItemInfo?.name}
+                    />
+                  )}
               </StyledTitleText>
               <div>
-                {(user && user.uid === galleryItemInfo?.userId)
-                && (
-                <StyledButtonItemImage
-                  onClick={handleCardDelete}
-                  image={deleteImage}
-                />
-                )}
+                {galleryOwner
+                  && (
+                    <StyledButtonItemImage
+                      onClick={handleCardDelete}
+                      image={deleteImage}
+                    />
+                  )}
               </div>
             </StyledTitle>
 
+            {galleryGuard && (
             <StyledBox>
               {photos.map((photo) => (
                 <div key={photo?.pid}>
@@ -136,6 +140,12 @@ const GalleryItem = () => {
                 </div>
               ))}
             </StyledBox>
+            )}
+            {!galleryGuard && (
+              <StyledAuthInfo>
+                You cannot access to photo collection from this gallery or the gallery has been deleted.
+              </StyledAuthInfo>
+            )}
           </StyledItem>
         </Col>
         <Col xs="12" sm="6" md="6" lg="6">
