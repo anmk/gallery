@@ -2,7 +2,7 @@
 This project uses [![React](https://img.shields.io/badge/React-20232A?style=plastic&logo=react&logoColor=61DAFB)](https://github.com/facebook/react) 
 and has been bootstrapped by [Create React App](https://github.com/facebook/create-react-app).
 
-![version](https://img.shields.io/badge/react%20version-16.13.1-blue?style=plastic) ![GitHub repo size](https://img.shields.io/github/repo-size/anmk/redirect?style=plastic)
+![version](https://img.shields.io/badge/react%20version-16.13.1-blue?style=plastic) ![GitHub repo size](https://img.shields.io/github/repo-size/anmk/gallery?style=plastic)
 
 The application is available at the following addresses:
 * https://your-gallery.web.app
